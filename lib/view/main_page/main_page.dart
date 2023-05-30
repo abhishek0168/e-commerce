@@ -25,7 +25,7 @@ class MainPage extends StatelessWidget {
         bottomNavigationBar: NavigationBarTheme(
           data: const NavigationBarThemeData(
             elevation: 0,
-            backgroundColor: AppColors.whiteColor,
+            // backgroundColor: AppColors.whiteColor,
             indicatorColor: AppColors.whiteColor,
           ),
           child: NavigationBar(
@@ -33,7 +33,7 @@ class MainPage extends StatelessWidget {
             onDestinationSelected: (int newIndex) {
               mainPageviewModel.changeIndex(newIndex);
             },
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
             destinations: const [
               NavigationDestination(
                 selectedIcon: Icon(

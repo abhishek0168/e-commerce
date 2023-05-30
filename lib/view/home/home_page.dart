@@ -1,4 +1,7 @@
-import 'package:ecommerce_app/view/widgets/home_page_widgets.dart';
+import 'package:ecommerce_app/utils/constants.dart';
+import 'package:ecommerce_app/view/home/home_page_section1.dart';
+import 'package:ecommerce_app/view/widgets/heading_widget.dart';
+import 'package:ecommerce_app/view/widgets/product_card.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -10,35 +13,13 @@ class HomePage extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
-    // final screenSize = MediaQuery.of(context).size;
-    return Column(
+    return ListView(
       children: [
-        Expanded(
-          child: ImageDispaly(
-            imgaeDr: imageDr[0],
-            text: 'New collection',
-            position: TextPosition.bottom,
-            alignment: Alignment.topCenter,
-          ),
-        ),
-        Expanded(
-          child: Row(
-            children: [
-              Expanded(
-                  child: ImageDispaly(
-                imgaeDr: imageDr[1],
-                text: 'Women\'s',
-                alignment: Alignment.topCenter,
-              )),
-              Expanded(
-                  child: ImageDispaly(
-                imgaeDr: imageDr[2],
-                text: 'Men\'s',
-                alignment: Alignment.topCenter,
-              )),
-            ],
-          ),
-        ),
+        HomePageSection1(imageDr: imageDr),
+        height20,
+        const H2(text: 'New conllections'),
+        height10,
+        const ProductCard(),
       ],
     );
   }

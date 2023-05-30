@@ -1,5 +1,6 @@
 {
     "vtools.autoHideBottomBar": true,
     "vtools.autoHideSideBar": true,
-    "vtools.autoHideDelay": 200
+    "vtools.autoHideDelay": 500,
+    "problems.autoReveal": true
 }

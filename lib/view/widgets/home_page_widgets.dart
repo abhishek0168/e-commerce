@@ -7,6 +7,7 @@ enum TextPosition {
 }
 
 class ImageDispaly extends StatelessWidget {
+  
   const ImageDispaly(
       {super.key,
       required this.imgaeDr,
@@ -36,7 +37,7 @@ class ImageDispaly extends StatelessWidget {
           ),
         ),
         Positioned(
-          child: Text(text, style: CustomeTextStyle.textHeadingWhite),
+          child: Text(text, style: CustomeTextStyle.mainHeadingWhite),
         ),
       ],
     );
