@@ -1,4 +1,4 @@
-import 'package:ecommerce_app/view/widgets/home_page_widgets.dart';
+import 'package:ecommerce_app/view/home/home_page_widgets.dart';
 import 'package:flutter/material.dart';
 
 class HomePageSection1 extends StatelessWidget {

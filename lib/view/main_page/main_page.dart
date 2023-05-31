@@ -1,5 +1,6 @@
 import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/home/home_page.dart';
+import 'package:ecommerce_app/view/shop/shop_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view_model/main_page_view_model.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ class MainPage extends StatelessWidget {
 
   final screens = [
     HomePage(),
-    const Placeholder(color: Colors.yellow),
+    ShopPage(),
     const Placeholder(color: Colors.orange),
     const Placeholder(color: Colors.green),
     const Placeholder(color: Colors.red),
@@ -21,6 +22,12 @@ class MainPage extends StatelessWidget {
     MainPageViewModel mainPageviewModel = context.watch<MainPageViewModel>();
     return SafeArea(
       child: Scaffold(
+        appBar: mainPageviewModel.currentIndex == 0
+            ? null
+            : AppBar(
+                title: const Text('Title'),
+                centerTitle: true,
+              ),
         body: screens[mainPageviewModel.currentIndex],
         bottomNavigationBar: NavigationBarTheme(
           data: const NavigationBarThemeData(

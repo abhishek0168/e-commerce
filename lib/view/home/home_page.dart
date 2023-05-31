@@ -19,7 +19,15 @@ class HomePage extends StatelessWidget {
         height20,
         const H2(text: 'New conllections'),
         height10,
-        const ProductCard(),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: List.generate(
+              7,
+              (index) => const ProductCard(),
+            ),
+          ),
+        ),
       ],
     );
   }
