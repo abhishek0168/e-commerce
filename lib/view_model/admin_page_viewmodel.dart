@@ -34,6 +34,8 @@ class AdminPageViewModel extends ChangeNotifier {
     'Shorts',
     'Skirt',
   ];
+
+  bool isLoading = false;
 // functions
 
   // image sectoin
@@ -119,17 +121,25 @@ class AdminPageViewModel extends ChangeNotifier {
     productPrice.clear();
     brandName.clear();
     productColor.clear();
-    productStock.clear();
-    productDiscount.clear();
-    productSizeS.clear();
-    productSizeM.clear();
-    productSizeL.clear();
-    productSizeXL.clear();
+    productStock.text = '0';
+    productDiscount.text = '0';
+    productSizeS.text = '0';
+    productSizeM.text = '0';
+    productSizeL.text = '0';
+    productSizeXL.text = '0';
+    genderDropDownValue = genderItemValues[0];
+    categoryDropValue = categories[0];
 
     notifyListeners();
   }
 
+  Future<void> changeLoading() async {
+    isLoading = !isLoading;
+    notifyListeners();
+  }
+
   Future<void> uploadValues() async {
+    await changeLoading();
     List<String> imageUrls;
     final productServices = FirebaseProductServices();
 
@@ -155,5 +165,7 @@ class AdminPageViewModel extends ChangeNotifier {
     await productServices.uploadDataToDatabase(productModel);
 
     clearValues();
+    changeLoading();
+    notifyListeners();
   }
 }
