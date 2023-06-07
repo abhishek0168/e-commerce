@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductModel {
   final String id;
@@ -6,12 +6,12 @@ class ProductModel {
   final String productPrice;
   final String brandName;
   final String gender;
-  final Map<String, int> productSizes;
+  final Map<String, dynamic> productSizes;
   final String productColor;
   final int productStock;
   final int productDiscount;
   final String productCategory;
-  final List<String> productImages;
+  final List<dynamic> productImages;
 
   ProductModel({
     required this.id,
@@ -40,4 +40,22 @@ class ProductModel {
         'productCategory': productCategory,
         'productImages': productImages,
       };
+
+  factory ProductModel.fromSnapshot(
+      DocumentSnapshot<Map<String, dynamic>> document) {
+    final data = document.data();
+    return ProductModel(
+      id: document.id,
+      productName: data!['productName'],
+      productPrice: data['productPrice'],
+      brandName: data['brandName'],
+      gender: data['gender'],
+      productSizes: data['productSizes'],
+      productColor: data['productColor'],
+      productStock: data['productStock'],
+      productDiscount: data['productDiscount'],
+      productCategory: data['productCategory'],
+      productImages: data['productImages'],
+    );
+  }
 }

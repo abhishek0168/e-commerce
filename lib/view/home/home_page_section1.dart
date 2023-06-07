@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:ecommerce_app/view/home/home_page_widgets.dart';
+import 'package:ecommerce_app/view/shop/shop_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePageSection1 extends StatelessWidget {
@@ -29,13 +32,25 @@ class HomePageSection1 extends StatelessWidget {
           height: screenSize.height / 2.5,
           child: Row(
             children: [
-              SizedBox(
+              InkWell(
+                onTap: () {
+                  log("Home page Women section tabed");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ShopPage(),
+                    ),
+                  );
+                },
+                child: SizedBox(
                   width: screenSize.width / 2,
                   child: ImageDispaly(
                     imgaeDr: imageDr[1],
                     text: 'Women\'s',
                     alignment: Alignment.topCenter,
-                  )),
+                  ),
+                ),
+              ),
               SizedBox(
                   width: screenSize.width / 2,
                   child: ImageDispaly(

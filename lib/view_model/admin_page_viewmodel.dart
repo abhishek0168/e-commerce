@@ -2,8 +2,9 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:ecommerce_app/model/product_model/product_model.dart';
-import 'package:ecommerce_app/services/fire_base_services.dart';
+import 'package:ecommerce_app/services/firebase_services.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
+import 'package:ecommerce_app/view_model/data_from_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -36,7 +37,16 @@ class AdminPageViewModel extends ChangeNotifier {
   ];
 
   bool isLoading = false;
+
+  // instances
+
+  final productServices = FirebaseProductServices();
+  final dataFromFirebase = DataFromFirebase();
+
 // functions
+
+  // init fucntion
+  void init() async {}
 
   // image sectoin
 
@@ -141,7 +151,6 @@ class AdminPageViewModel extends ChangeNotifier {
   Future<void> uploadValues() async {
     await changeLoading();
     List<String> imageUrls;
-    final productServices = FirebaseProductServices();
 
     imageUrls = await productServices.uploadImageToStorage(images);
     final productModel = ProductModel(
@@ -163,7 +172,7 @@ class AdminPageViewModel extends ChangeNotifier {
       productImages: imageUrls,
     );
     await productServices.uploadDataToDatabase(productModel);
-
+    await dataFromFirebase.callPrductDetails();
     clearValues();
     changeLoading();
     notifyListeners();

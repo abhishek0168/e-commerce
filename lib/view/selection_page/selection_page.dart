@@ -1,5 +1,6 @@
 import 'package:ecommerce_app/utils/constants.dart';
-import 'package:ecommerce_app/view/admin_panel/admin_page.dart';
+import 'package:ecommerce_app/view/admin_panel/admin_product_adding_page.dart';
+import 'package:ecommerce_app/view/admin_panel/admin_product_diplaying_page.dart';
 import 'package:ecommerce_app/view/main_page/main_page.dart';
 import 'package:flutter/material.dart';
 
@@ -30,7 +31,7 @@ class SelectPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AdminPage(),
+                      builder: (context) => const AdminDisplayPage(),
                     ),
                   );
                 },

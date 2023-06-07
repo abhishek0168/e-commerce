@@ -1,6 +1,7 @@
 import 'package:ecommerce_app/view/selection_page/selection_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view_model/admin_page_viewmodel.dart';
+import 'package:ecommerce_app/view_model/data_from_firebase.dart';
 import 'package:ecommerce_app/view_model/main_page_view_model.dart';
 import 'package:ecommerce_app/view_model/shop_view_model.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MainPageViewModel()),
         ChangeNotifierProvider(create: (_) => ShopViewModel()),
         ChangeNotifierProvider(create: (_) => AdminPageViewModel()),
+        ChangeNotifierProvider(create: (_) => DataFromFirebase()..init()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

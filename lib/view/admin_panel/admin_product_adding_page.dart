@@ -6,14 +6,16 @@ import 'package:provider/provider.dart';
 
 import 'admin_text_form_widget.dart';
 
-class AdminPage extends StatelessWidget {
-  AdminPage({super.key});
+class AdminProductAddingPage extends StatelessWidget {
+  AdminProductAddingPage({super.key});
   final formGlobalKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<AdminPageViewModel>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text("Add product"),
+      ),
       body: Stack(
         children: [
           SingleChildScrollView(
