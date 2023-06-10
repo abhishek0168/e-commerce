@@ -10,6 +10,8 @@ class H2 extends StatelessWidget {
     return Text(
       text,
       style: CustomeTextStyle.productName,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }

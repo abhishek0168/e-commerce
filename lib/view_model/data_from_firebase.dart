@@ -17,6 +17,7 @@ class DataFromFirebase extends ChangeNotifier {
 // Functions
   void init() async {
     await callPrductDetails();
+    selectedProductsData = productsData;
   }
 
   Future<void> callPrductDetails() async {
@@ -27,5 +28,6 @@ class DataFromFirebase extends ChangeNotifier {
   Future<void> callSelectedProductDetails(String value) async {
     selectedProductsData =
         await productServices.getSelectedProductDetails(value);
+    notifyListeners();
   }
 }

@@ -11,4 +11,9 @@ class ShopViewModel extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  int findDiscountPrice(int price, int discount) {
+    int productDiscountPrice = (price - ((discount / 100) * price)).toInt();
+    return productDiscountPrice;
+  }
 }

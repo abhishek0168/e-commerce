@@ -8,6 +8,7 @@ class AdminDisplayPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final firebaseDataController = Provider.of<DataFromFirebase>(context);
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxisScrolled) => [
@@ -17,37 +18,40 @@ class AdminDisplayPage extends StatelessWidget {
             title: Text('Products'),
           )
         ],
-        body: Consumer<DataFromFirebase>(
-          builder: (context, value, child) {
-            return value.productsData.isNotEmpty
-                ? ListView.separated(
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(value.productsData[index].brandName),
-                        subtitle: Text(
-                            'Stock : ${value.productsData[index].productStock}'),
-                        leading: Container(
-                          width: 100,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                  value.productsData[index].productImages[0],
-                                ),
-                                fit: BoxFit.cover,
-                                alignment: Alignment.topCenter),
+        body: RefreshIndicator(
+          onRefresh: () => firebaseDataController.callPrductDetails(),
+          child: Consumer<DataFromFirebase>(
+            builder: (context, value, child) {
+              return value.productsData.isNotEmpty
+                  ? ListView.separated(
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(value.productsData[index].brandName),
+                          subtitle: Text(
+                              'Stock : ${value.productsData[index].productStock}'),
+                          leading: Container(
+                            width: 100,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: NetworkImage(
+                                    value.productsData[index].productImages[0],
+                                  ),
+                                  fit: BoxFit.cover,
+                                  alignment: Alignment.topCenter),
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) {
-                      return const Divider();
-                    },
-                    itemCount: value.productsData.length)
-                : const Center(
-                    child: CircularProgressIndicator(),
-                  );
-          },
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return const Divider();
+                      },
+                      itemCount: value.productsData.length)
+                  : const Center(
+                      child: CircularProgressIndicator(),
+                    );
+            },
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

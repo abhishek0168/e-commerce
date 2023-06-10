@@ -1,5 +1,9 @@
+import 'package:ecommerce_app/model/product_model/product_model.dart';
+import 'package:ecommerce_app/utils/constants.dart';
+import 'package:ecommerce_app/view/product_view/product_view_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view/widgets/product_card.dart';
+import 'package:ecommerce_app/view_model/data_from_firebase.dart';
 import 'package:ecommerce_app/view_model/shop_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +21,7 @@ class ShopPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ShopViewModel shopViewModel = context.watch<ShopViewModel>();
+
     return Column(
       children: [
         SingleChildScrollView(
@@ -72,20 +77,51 @@ class ShopPage extends StatelessWidget {
             ],
           ),
         ),
+        height10,
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: GridView.builder(
-                itemCount: 10,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.5,
-                  crossAxisSpacing: 10,
-                  // mainAxisSpacing: 10,
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  return const ProductCard();
-                }),
+            child: Consumer<DataFromFirebase>(
+              builder: (context, value, child) {
+                List<ProductModel> productData = value.selectedProductsData;
+                return GridView.builder(
+                  itemCount: productData.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.5,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 15,
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    return InkWell(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductViewPage(
+                            productData: productData[index],
+                            productDiscountPrice:
+                                shopViewModel.findDiscountPrice(
+                                    int.parse(productData[index].productPrice),
+                                    productData[index].productDiscount),
+                          ),
+                        ),
+                      ),
+                      child: ProductCard(
+                        imageUrl: productData[index].productImages[0],
+                        brandName: productData[index].brandName,
+                        productName: productData[index].productName,
+                        productPrice:
+                            int.parse(productData[index].productPrice),
+                        productDiscount: productData[index].productDiscount,
+                        productDiscountPrice: shopViewModel.findDiscountPrice(
+                            int.parse(productData[index].productPrice),
+                            productData[index].productDiscount),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
           ),
         ),
       ],

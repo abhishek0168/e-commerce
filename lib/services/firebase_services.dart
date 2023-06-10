@@ -53,9 +53,10 @@ class FirebaseProductServices {
 
   Future<List<ProductModel>> getProductDetails() async {
     final productDetails = await _db.collection('Products').get();
+
     final productData =
         productDetails.docs.map((e) => ProductModel.fromSnapshot(e)).toList();
-
+    
     return productData;
   }
 

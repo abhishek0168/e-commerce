@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:ecommerce_app/view/home/home_page_widgets.dart';
-import 'package:ecommerce_app/view/shop/shop_page.dart';
+import 'package:ecommerce_app/view_model/data_from_firebase.dart';
+import 'package:ecommerce_app/view_model/main_page_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePageSection1 extends StatelessWidget {
   const HomePageSection1({
@@ -14,6 +16,8 @@ class HomePageSection1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mainPageController = Provider.of<MainPageViewModel>(context);
+    final firebaseDataController = Provider.of<DataFromFirebase>(context);
     final screenSize = MediaQuery.of(context).size;
     return Column(
       children: [
@@ -33,14 +37,11 @@ class HomePageSection1 extends StatelessWidget {
           child: Row(
             children: [
               InkWell(
-                onTap: () {
+                onTap: () async {
                   log("Home page Women section tabed");
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ShopPage(),
-                    ),
-                  );
+                  await firebaseDataController
+                      .callSelectedProductDetails('Female');
+                  mainPageController.changeIndex(1);
                 },
                 child: SizedBox(
                   width: screenSize.width / 2,
@@ -51,13 +52,21 @@ class HomePageSection1 extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
-                  width: screenSize.width / 2,
-                  child: ImageDispaly(
-                    imgaeDr: imageDr[2],
-                    text: 'Men\'s',
-                    alignment: Alignment.topCenter,
-                  )),
+              InkWell(
+                onTap: () async {
+                  log("Home page Women section tabed");
+                  await firebaseDataController
+                      .callSelectedProductDetails('Male');
+                  mainPageController.changeIndex(1);
+                },
+                child: SizedBox(
+                    width: screenSize.width / 2,
+                    child: ImageDispaly(
+                      imgaeDr: imageDr[2],
+                      text: 'Men\'s',
+                      alignment: Alignment.topCenter,
+                    )),
+              ),
             ],
           ),
         ),

@@ -1,7 +1,5 @@
 import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/home/home_page_section1.dart';
-import 'package:ecommerce_app/view/widgets/heading_widget.dart';
-import 'package:ecommerce_app/view/widgets/product_card.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -17,17 +15,6 @@ class HomePage extends StatelessWidget {
       children: [
         HomePageSection1(imageDr: imageDr),
         height20,
-        const H2(text: 'New conllections'),
-        height10,
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: List.generate(
-              7,
-              (index) => const ProductCard(),
-            ),
-          ),
-        ),
       ],
     );
   }

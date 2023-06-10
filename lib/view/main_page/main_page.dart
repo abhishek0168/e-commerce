@@ -1,4 +1,5 @@
 import 'package:ecommerce_app/utils/constants.dart';
+import 'package:ecommerce_app/view/favorite_page/favorite_page.dart';
 import 'package:ecommerce_app/view/home/home_page.dart';
 import 'package:ecommerce_app/view/shop/shop_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
@@ -13,7 +14,7 @@ class MainPage extends StatelessWidget {
     HomePage(),
     ShopPage(),
     const Placeholder(color: Colors.orange),
-    const Placeholder(color: Colors.green),
+    const FavoritePage(),
     const Placeholder(color: Colors.red),
   ];
 
@@ -22,12 +23,7 @@ class MainPage extends StatelessWidget {
     MainPageViewModel mainPageviewModel = context.watch<MainPageViewModel>();
     return SafeArea(
       child: Scaffold(
-        appBar: mainPageviewModel.currentIndex == 0
-            ? null
-            : AppBar(
-                title: const Text('Title'),
-                centerTitle: true,
-              ),
+        appBar: mainPageviewModel.currentIndex == 0 ? null : AppBar(),
         body: screens[mainPageviewModel.currentIndex],
         bottomNavigationBar: NavigationBarTheme(
           data: const NavigationBarThemeData(
