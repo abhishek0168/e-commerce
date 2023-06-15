@@ -1,4 +1,5 @@
 import 'package:ecommerce_app/view/admin_panel/admin_product_adding_page.dart';
+import 'package:ecommerce_app/view/admin_panel/admin_product_view_page.dart';
 import 'package:ecommerce_app/view_model/data_from_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,20 +26,31 @@ class AdminDisplayPage extends StatelessWidget {
               return value.productsData.isNotEmpty
                   ? ListView.separated(
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(value.productsData[index].brandName),
-                          subtitle: Text(
-                              'Stock : ${value.productsData[index].productStock}'),
-                          leading: Container(
-                            width: 100,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: NetworkImage(
-                                    value.productsData[index].productImages[0],
-                                  ),
-                                  fit: BoxFit.cover,
-                                  alignment: Alignment.topCenter),
+                        return InkWell(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AdminProductViewPage(
+                                productData: value.productsData[index],
+                              ),
+                            ),
+                          ),
+                          child: ListTile(
+                            title: Text(value.productsData[index].brandName),
+                            subtitle: Text(
+                                'Stock : ${value.productsData[index].productStock}'),
+                            leading: Container(
+                              width: 100,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: NetworkImage(
+                                      value
+                                          .productsData[index].productImages[0],
+                                    ),
+                                    fit: BoxFit.cover,
+                                    alignment: Alignment.topCenter),
+                              ),
                             ),
                           ),
                         );
@@ -47,8 +59,13 @@ class AdminDisplayPage extends StatelessWidget {
                         return const Divider();
                       },
                       itemCount: value.productsData.length)
-                  : const Center(
-                      child: CircularProgressIndicator(),
+                  : Center(
+                      child: Image.asset(
+                        'assets/images/rive_loading.gif',
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      ),
                     );
             },
           ),

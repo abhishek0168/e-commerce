@@ -45,6 +45,7 @@ class FirebaseProductServices {
       productDiscount: model.productDiscount,
       productCategory: model.productCategory,
       productImages: model.productImages,
+      status: model.status,
     );
 
     final dataModel = productData.toJson();
@@ -56,7 +57,7 @@ class FirebaseProductServices {
 
     final productData =
         productDetails.docs.map((e) => ProductModel.fromSnapshot(e)).toList();
-    
+
     return productData;
   }
 

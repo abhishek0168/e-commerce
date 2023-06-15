@@ -4,6 +4,7 @@ import 'package:ecommerce_app/view/home/home_page.dart';
 import 'package:ecommerce_app/view/shop/shop_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view_model/main_page_view_model.dart';
+import 'package:ecommerce_app/view_model/sign_in_page_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,10 +21,21 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MainPageViewModel mainPageviewModel = context.watch<MainPageViewModel>();
+    final mainPageviewModel = context.watch<MainPageViewModel>();
+    final signInpageViewModel = Provider.of<SignInPageViewModel>(context);
     return SafeArea(
       child: Scaffold(
-        appBar: mainPageviewModel.currentIndex == 0 ? null : AppBar(),
+        appBar: mainPageviewModel.currentIndex == 0
+            ? null
+            : AppBar(
+                actions: [
+                  IconButton(
+                      onPressed: () {
+                        signInpageViewModel.signOutUser();
+                      },
+                      icon: const Icon(Icons.logout))
+                ],
+              ),
         body: screens[mainPageviewModel.currentIndex],
         bottomNavigationBar: NavigationBarTheme(
           data: const NavigationBarThemeData(

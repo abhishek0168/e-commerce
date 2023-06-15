@@ -7,10 +7,11 @@ class SignInPasswordField extends StatelessWidget {
     super.key,
     required this.controller,
     required this.viewModelController,
+    required this.label,
   });
 
   final SignInPageViewModel viewModelController;
-
+  final String label;
   final TextEditingController controller;
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ class SignInPasswordField extends StatelessWidget {
                   ? const Icon(Icons.visibility)
                   : const Icon(Icons.visibility_off)),
           border: InputBorder.none,
-          label: const Text('Password'),
+          label: Text(label),
           fillColor: AppColors.whiteColor,
           filled: true,
         ),

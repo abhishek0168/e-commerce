@@ -95,6 +95,34 @@ class AdminProductAddingPage extends StatelessWidget {
                   ),
                   Consumer<AdminPageViewModel>(
                     builder: (context, controller, child) {
+                      return Row(
+                        children: [
+                          Flexible(
+                            child: RadioListTile<ProductStatus>(
+                              value: ProductStatus.available,
+                              groupValue: controller.productStatus,
+                              onChanged: (value) {
+                                controller.changeStatus(value);
+                              },
+                              title: const Text('available'),
+                            ),
+                          ),
+                          Flexible(
+                            child: RadioListTile<ProductStatus>(
+                              value: ProductStatus.nuavailable,
+                              groupValue: controller.productStatus,
+                              onChanged: (value) {
+                                controller.changeStatus(value);
+                              },
+                              title: const Text('unavailable'),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  Consumer<AdminPageViewModel>(
+                    builder: (context, controller, child) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: DropdownButtonFormField(

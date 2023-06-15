@@ -1,12 +1,16 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/services/firebase_services.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view_model/data_from_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+enum ProductStatus {
+  available,
+  nuavailable,
+}
 
 class AdminPageViewModel extends ChangeNotifier {
   // textediting controllers
@@ -38,6 +42,8 @@ class AdminPageViewModel extends ChangeNotifier {
 
   bool isLoading = false;
 
+  ProductStatus? productStatus = ProductStatus.available;
+
   // instances
 
   final productServices = FirebaseProductServices();
@@ -47,6 +53,13 @@ class AdminPageViewModel extends ChangeNotifier {
 
   // init fucntion
   void init() async {}
+
+  // radio button
+
+  void changeStatus(ProductStatus? status) {
+    productStatus = status;
+    notifyListeners();
+  }
 
   // image sectoin
 
@@ -139,6 +152,7 @@ class AdminPageViewModel extends ChangeNotifier {
     productSizeXL.text = '0';
     genderDropDownValue = genderItemValues[0];
     categoryDropValue = categories[0];
+    productStatus = ProductStatus.available;
 
     notifyListeners();
   }
@@ -170,6 +184,7 @@ class AdminPageViewModel extends ChangeNotifier {
       productDiscount: int.parse(productDiscount.text),
       productCategory: categoryDropValue,
       productImages: imageUrls,
+      status: productStatus == ProductStatus.available ? true : false,
     );
     await productServices.uploadDataToDatabase(productModel);
     await dataFromFirebase.callPrductDetails();

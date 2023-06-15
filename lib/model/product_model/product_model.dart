@@ -12,6 +12,7 @@ class ProductModel {
   final int productDiscount;
   final String productCategory;
   final List<dynamic> productImages;
+  final bool status;
 
   ProductModel({
     required this.id,
@@ -25,6 +26,7 @@ class ProductModel {
     required this.productDiscount,
     required this.productCategory,
     required this.productImages,
+    required this.status,
   });
 
   Map<String, dynamic> toJson() => {
@@ -39,6 +41,7 @@ class ProductModel {
         'productDiscount': productDiscount,
         'productCategory': productCategory,
         'productImages': productImages,
+        'status': status,
       };
 
   factory ProductModel.fromSnapshot(
@@ -56,6 +59,7 @@ class ProductModel {
       productDiscount: data['productDiscount'],
       productCategory: data['productCategory'],
       productImages: data['productImages'],
+      status: data['status'],
     );
   }
 }

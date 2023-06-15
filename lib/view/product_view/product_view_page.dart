@@ -5,6 +5,7 @@ import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view/widgets/add_to_favorite.dart';
 import 'package:ecommerce_app/view/widgets/heading_widget.dart';
 import 'package:ecommerce_app/view/widgets/text_styles.dart';
+import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
 import 'package:flutter/material.dart';
 
 class ProductViewPage extends StatelessWidget {
@@ -47,15 +48,16 @@ class ProductViewPage extends StatelessWidget {
                         (image) => SizedBox(
                           height: (screenSize.height) - 250,
                           width: screenSize.width,
-                          child: CachedNetworkImage(
-                            placeholder: (context, url) => const Center(
-                                child: Padding(
-                              padding: EdgeInsets.all(12),
-                              child: LinearProgressIndicator(),
-                            )),
-                            imageUrl: image,
-                            fit: BoxFit.cover,
-                            alignment: Alignment.topCenter,
+                          child: InteractiveViewer(
+                            minScale: 1.0,
+                            maxScale: 2.0,
+                            child: CachedNetworkImage(
+                              imageUrl: image,
+                              placeholder: (context, url) =>
+                                  threeDotLoadingAnimation(),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            ),
                           ),
                         ),
                       )

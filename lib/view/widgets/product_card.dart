@@ -4,6 +4,7 @@ import 'package:ecommerce_app/view/widgets/add_to_favorite.dart';
 import 'package:ecommerce_app/view/widgets/heading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce_app/view/widgets/text_styles.dart';
+import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
 import 'package:flutter/material.dart';
 
 class ProductCard extends StatelessWidget {
@@ -42,9 +43,7 @@ class ProductCard extends StatelessWidget {
                     ),
                     child: CachedNetworkImage(
                       imageUrl: imageUrl,
-                      placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                      placeholder: (context, url) => threeDotLoadingAnimation(),
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
                     ),

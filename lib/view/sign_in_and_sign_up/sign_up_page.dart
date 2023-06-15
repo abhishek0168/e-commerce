@@ -1,20 +1,19 @@
 import 'package:ecommerce_app/utils/constants.dart';
-import 'package:ecommerce_app/view/sign_in_and_sign_up/password_reset.dart';
-import 'package:ecommerce_app/view/sign_in_and_sign_up/sign_up_page.dart';
+import 'package:ecommerce_app/view/sign_in_and_sign_up/login_page.dart';
 import 'package:ecommerce_app/view/sign_in_and_sign_up/textfield_widgets.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view_model/sign_in_page_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class LoginInPage extends StatelessWidget {
-  LoginInPage({super.key});
-  final formGlobalKey = GlobalKey<FormState>();
+class SignUpPage extends StatelessWidget {
+  SignUpPage({super.key});
+
+  final formGlobalkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final viewModelController =
-        Provider.of<SignInPageViewModel>(context, listen: false);
+    final signUpController = Provider.of<SignInPageViewModel>(context);
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
@@ -24,12 +23,12 @@ class LoginInPage extends StatelessWidget {
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Form(
-                key: formGlobalKey,
+                key: formGlobalkey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'Sign in',
+                      'Sign up ',
                       style: TextStyle(
                         fontSize: 48,
                       ),
@@ -37,75 +36,48 @@ class LoginInPage extends StatelessWidget {
                     const SizedBox(
                       height: 40,
                     ),
-                    Consumer<SignInPageViewModel>(
-                      builder: (context, value, child) => SignInTextField(
-                        label: 'Name',
-                        controller: viewModelController.emailController,
-                      ),
+                    SignInTextField(
+                      label: 'Name',
+                      controller: signUpController.signUpNameController,
+                    ),
+                    height10,
+                    SignInTextField(
+                      label: 'Email',
+                      controller: signUpController.signUpEmailController,
                     ),
                     height10,
                     Consumer<SignInPageViewModel>(
                       builder: (context, value, child) => SignInPasswordField(
                         label: "Password",
                         viewModelController: value,
-                        controller: value.passwordController,
+                        controller: value.signUpPasswordController,
+                      ),
+                    ),
+                    height10,
+                    Consumer<SignInPageViewModel>(
+                      builder: (context, value, child) => Material(
+                        elevation: 1,
+                        child: TextFormField(
+                          controller: value.signUpValidatePasswordController,
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            label: Text('Confirm Password'),
+                            fillColor: AppColors.whiteColor,
+                            filled: true,
+                          ),
+                          validator: (signUpValidatePasswordController) =>
+                              value.conformPassword(
+                                  value.signUpValidatePasswordController.text),
+                        ),
                       ),
                     ),
                     height20,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const ResetPassword(),
-                              ),
-                            );
-                          },
-                          child: const Row(
-                            children: [
-                              Text('Forgot password ?'),
-                              width10,
-                              Icon(
-                                Icons.arrow_right_alt,
-                                color: AppColors.primaryColor,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
                     height20,
                     FilledButton(
-                      onPressed: () async {
-                        if (formGlobalKey.currentState!.validate()) {
-                          String? message =
-                              await viewModelController.signInPageAuth(
-                            email:
-                                viewModelController.emailController.text.trim(),
-                            password: viewModelController
-                                .passwordController.text
-                                .trim(),
-                          );
-
-                          if (message != null && context.mounted) {
-                            final snackBar = SnackBar(
-                              backgroundColor: AppColors.primaryColor,
-                              content: Text(
-                                message,
-                                style: const TextStyle(
-                                    color: AppColors.whiteColor),
-                              ),
-                            );
-
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
-                          } else {
-                            viewModelController.emailController.clear();
-                            viewModelController.passwordController.clear();
-                          }
+                      onPressed: () {
+                        if (formGlobalkey.currentState!.validate()) {
+                          signUpController.signUpPageAuth(email: signUpController.signUpEmailController.text.trim(), password:signUpController.signUpPasswordController.text.trim());
                         }
                       },
                       style: const ButtonStyle(
@@ -113,9 +85,9 @@ class LoginInPage extends StatelessWidget {
                           Size(double.infinity, 50),
                         ),
                       ),
-                      child: Text(
-                        'Sign in'.toUpperCase(),
-                        style: const TextStyle(
+                      child: const Text(
+                        'SIGN UP',
+                        style: TextStyle(
                           fontSize: 15,
                         ),
                       ),
@@ -123,20 +95,19 @@ class LoginInPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('Don\'t have an account?'),
+                        const Text('Alreadey have an Account ?'),
                         TextButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => SignUpPage(),
+                                  builder: (context) => LoginInPage(),
                                 ),
                               );
                             },
-                            child: const Text('Sign up')),
+                            child: const Text('Sign in'))
                       ],
                     ),
-                    height20,
                     height20,
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -146,7 +117,6 @@ class LoginInPage extends StatelessWidget {
                         Flexible(child: Divider()),
                       ],
                     ),
-                    height20,
                     height20,
                     IconButton(
                       onPressed: () {},
