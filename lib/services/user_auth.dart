@@ -1,6 +1,8 @@
-import 'dart:developer';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_app/model/user_model/user_model.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class UserAuthFirebase {
   Future<String?> signIn({
@@ -44,6 +46,19 @@ class UserAuthFirebase {
   }
 
   Future<void> signOut() async {
-    await FirebaseAuth.instance.signOut();
+    DefaultCacheManager().emptyCache();
+  }
+
+  Future<void> addUserToDatabase(UserModel model) async {
+    final userDoc = FirebaseFirestore.instance.collection('Users').doc();
+    final userData = UserModel(
+      id: userDoc.id,
+      userName: model.userName,
+      userEmail: model.userEmail,
+      userPassword: model.userPassword,
+    );
+
+    final json = userData.toJson();
+    await userDoc.set(json);
   }
 }

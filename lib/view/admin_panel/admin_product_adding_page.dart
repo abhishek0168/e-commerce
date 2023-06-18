@@ -60,9 +60,31 @@ class AdminProductAddingPage extends StatelessWidget {
                     controller: controller.productName,
                     title: 'Product Name',
                   ),
-                  AdminTextForm(
-                    controller: controller.productPrice,
-                    title: 'Product price',
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      controller: controller.productPrice,
+                      onChanged: (value) {
+                        controller.findDiscountPrice();
+                      },
+                      decoration: const InputDecoration(
+                        label: Text('Product price'),
+
+                        enabledBorder: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(),
+                        errorBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: AppColors.primaryColor)),
+                        focusedErrorBorder: OutlineInputBorder(),
+                        // border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'This feild is empty';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
                   AdminTextForm(
                     controller: controller.brandName,
@@ -262,9 +284,29 @@ class AdminProductAddingPage extends StatelessWidget {
                     controller: controller.productStock,
                     title: 'Product stock',
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      controller: controller.productDiscount,
+                      onChanged: (value) {
+                        controller.findDiscountPrice();
+                      },
+                      decoration: const InputDecoration(
+                        label: Text('Product Discount (in percentage)'),
+                        enabledBorder: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'This feild is empty';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
                   AdminTextForm(
-                    controller: controller.productDiscount,
-                    title: 'Product Discount (in percentage)',
+                    controller: controller.productDiscountedprice,
+                    title: 'discounted price',
                   ),
                   height20,
                   Row(

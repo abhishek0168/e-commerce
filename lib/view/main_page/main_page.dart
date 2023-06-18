@@ -1,4 +1,5 @@
 import 'package:ecommerce_app/utils/constants.dart';
+import 'package:ecommerce_app/view/cart/cart_page.dart';
 import 'package:ecommerce_app/view/favorite_page/favorite_page.dart';
 import 'package:ecommerce_app/view/home/home_page.dart';
 import 'package:ecommerce_app/view/shop/shop_page.dart';
@@ -14,7 +15,7 @@ class MainPage extends StatelessWidget {
   final screens = [
     HomePage(),
     ShopPage(),
-    const Placeholder(color: Colors.orange),
+    const CartPage(),
     const FavoritePage(),
     const Placeholder(color: Colors.red),
   ];
@@ -23,6 +24,7 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final mainPageviewModel = context.watch<MainPageViewModel>();
     final signInpageViewModel = Provider.of<SignInPageViewModel>(context);
+
     return SafeArea(
       child: Scaffold(
         appBar: mainPageviewModel.currentIndex == 0

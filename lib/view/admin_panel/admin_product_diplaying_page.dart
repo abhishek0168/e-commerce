@@ -1,6 +1,7 @@
 import 'package:ecommerce_app/view/admin_panel/admin_product_adding_page.dart';
 import 'package:ecommerce_app/view/admin_panel/admin_product_view_page.dart';
-import 'package:ecommerce_app/view_model/data_from_firebase.dart';
+import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
+import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -59,14 +60,7 @@ class AdminDisplayPage extends StatelessWidget {
                         return const Divider();
                       },
                       itemCount: value.productsData.length)
-                  : Center(
-                      child: Image.asset(
-                        'assets/images/rive_loading.gif',
-                        width: 80,
-                        height: 80,
-                        fit: BoxFit.cover,
-                      ),
-                    );
+                  : threeDotLoadingAnimation();
             },
           ),
         ),

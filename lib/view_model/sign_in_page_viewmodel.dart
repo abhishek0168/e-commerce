@@ -1,4 +1,8 @@
+import 'dart:developer';
+
+import 'package:ecommerce_app/model/user_model/user_model.dart';
 import 'package:ecommerce_app/services/user_auth.dart';
+import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
 import 'package:flutter/material.dart';
 
 class SignInPageViewModel extends ChangeNotifier {
@@ -16,6 +20,15 @@ class SignInPageViewModel extends ChangeNotifier {
   final resetPasswordController = TextEditingController();
 
   bool displayPassword = true;
+
+  // Auth page
+  bool isLogin = true;
+
+  void toggle() {
+    isLogin = !isLogin;
+    notifyListeners();
+    log(isLogin.toString());
+  }
 
   changeDisplayPassword() {
     displayPassword = !displayPassword;
@@ -54,23 +67,55 @@ class SignInPageViewModel extends ChangeNotifier {
   Future<String?> signInPageAuth({
     required String email,
     required String password,
+    BuildContext? context,
   }) async {
-    String? error =
-        await firebseUserAuth.signIn(email: email, password: password);
-    return error;
+    if (context != null) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => threeDotLoadingAnimation(),
+      );
+    }
+
+    String? message = await firebseUserAuth.signIn(
+      email: email,
+      password: password,
+    );
+    notifyListeners();
+    return message;
   }
 
   Future<String?> signUpPageAuth({
     required String email,
     required String password,
+    BuildContext? context,
   }) async {
-    String? error =
+    if (context != null) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => threeDotLoadingAnimation(),
+      );
+    }
+    String? message =
         await firebseUserAuth.createUser(email: email, password: password);
-    return error;
+
+    return message;
   }
 
   Future<void> signOutUser() async {
     await firebseUserAuth.signOut();
+  }
+
+  Future<void> createUser() async {
+    final userData = UserModel(
+      id: '',
+      userName: signUpNameController.text.trim(),
+      userEmail: signUpEmailController.text.trim(),
+      userPassword: signUpPasswordController.text.trim(),
+    );
+
+    await firebseUserAuth.addUserToDatabase(userData);
   }
 
   @override

@@ -142,7 +142,9 @@ class ProductCard extends StatelessWidget {
             right: 0,
             bottom: 0,
             child: AddToFavoriteWidget(
-              onPress: () {},
+              onPress: () {
+                
+              },
             ),
           )
         ],

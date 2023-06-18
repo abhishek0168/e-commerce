@@ -1,10 +1,11 @@
 import 'package:ecommerce_app/view/selection_page/selection_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view_model/admin_page_viewmodel.dart';
-import 'package:ecommerce_app/view_model/data_from_firebase.dart';
+import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
 import 'package:ecommerce_app/view_model/main_page_view_model.dart';
 import 'package:ecommerce_app/view_model/shop_view_model.dart';
 import 'package:ecommerce_app/view_model/sign_in_page_viewmodel.dart';
+import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -31,13 +32,13 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
 
-  // This widget is the root of your application.
+  final navigatorKey = GlobalKey<NavigatorState>();
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -47,10 +48,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AdminPageViewModel()),
         ChangeNotifierProvider(create: (_) => DataFromFirebase()..init()),
         ChangeNotifierProvider(create: (_) => SignInPageViewModel()),
+        ChangeNotifierProvider(create: (_) => UserDetailsViewModel()..init()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter e-commerce',
+        navigatorKey: navigatorKey,
         theme: ThemeData(
           textTheme: GoogleFonts.alataTextTheme(Theme.of(context).textTheme),
           colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),

@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:ecommerce_app/view/home/home_page_widgets.dart';
-import 'package:ecommerce_app/view_model/data_from_firebase.dart';
+import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
 import 'package:ecommerce_app/view_model/main_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

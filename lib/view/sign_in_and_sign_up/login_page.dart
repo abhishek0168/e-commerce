@@ -1,16 +1,15 @@
 import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/sign_in_and_sign_up/password_reset.dart';
-import 'package:ecommerce_app/view/sign_in_and_sign_up/sign_up_page.dart';
 import 'package:ecommerce_app/view/sign_in_and_sign_up/textfield_widgets.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view_model/sign_in_page_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class LoginInPage extends StatelessWidget {
-  LoginInPage({super.key});
+class LogInPage extends StatelessWidget {
+  LogInPage({super.key, required this.onClickSignIn});
   final formGlobalKey = GlobalKey<FormState>();
-
+  final Function() onClickSignIn;
   @override
   Widget build(BuildContext context) {
     final viewModelController =
@@ -39,7 +38,7 @@ class LoginInPage extends StatelessWidget {
                     ),
                     Consumer<SignInPageViewModel>(
                       builder: (context, value, child) => SignInTextField(
-                        label: 'Name',
+                        label: 'Email',
                         controller: viewModelController.emailController,
                       ),
                     ),
@@ -126,12 +125,9 @@ class LoginInPage extends StatelessWidget {
                         const Text('Don\'t have an account?'),
                         TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SignUpPage(),
-                                ),
-                              );
+                              viewModelController.emailController.clear();
+                              viewModelController.passwordController.clear();
+                              onClickSignIn();
                             },
                             child: const Text('Sign up')),
                       ],

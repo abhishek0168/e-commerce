@@ -43,6 +43,7 @@ class FirebaseProductServices {
       productColor: model.productColor,
       productStock: model.productStock,
       productDiscount: model.productDiscount,
+      productDiscountedprice: model.productDiscountedprice,
       productCategory: model.productCategory,
       productImages: model.productImages,
       status: model.status,

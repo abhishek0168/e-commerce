@@ -1,5 +1,4 @@
 import 'package:ecommerce_app/utils/constants.dart';
-import 'package:ecommerce_app/view/sign_in_and_sign_up/login_page.dart';
 import 'package:ecommerce_app/view/sign_in_and_sign_up/textfield_widgets.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view_model/sign_in_page_viewmodel.dart';
@@ -7,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SignUpPage extends StatelessWidget {
-  SignUpPage({super.key});
+  SignUpPage({super.key, required this.onClickSignIn});
 
   final formGlobalkey = GlobalKey<FormState>();
-
+  final Function() onClickSignIn;
   @override
   Widget build(BuildContext context) {
     final signUpController = Provider.of<SignInPageViewModel>(context);
@@ -75,9 +74,39 @@ class SignUpPage extends StatelessWidget {
                     height20,
                     height20,
                     FilledButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (formGlobalkey.currentState!.validate()) {
-                          signUpController.signUpPageAuth(email: signUpController.signUpEmailController.text.trim(), password:signUpController.signUpPasswordController.text.trim());
+                          String? message =
+                              await signUpController.signUpPageAuth(
+                            email: signUpController.signUpEmailController.text
+                                .trim(),
+                            password: signUpController
+                                .signUpPasswordController.text
+                                .trim(),
+                          );
+
+                          if (message != null && context.mounted) {
+                            final snackBar = SnackBar(
+                              backgroundColor: AppColors.primaryColor,
+                              content: Text(
+                                message,
+                                style: const TextStyle(
+                                    color: AppColors.whiteColor),
+                              ),
+                            );
+
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          } else {
+                            // creating account in database
+                            await signUpController.createUser();
+
+                            signUpController.signUpEmailController.clear();
+                            signUpController.signUpPasswordController.clear();
+                            signUpController.signUpNameController.clear();
+                            signUpController.signUpValidatePasswordController
+                                .clear();
+                          }
                         }
                       },
                       style: const ButtonStyle(
@@ -98,12 +127,7 @@ class SignUpPage extends StatelessWidget {
                         const Text('Alreadey have an Account ?'),
                         TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => LoginInPage(),
-                                ),
-                              );
+                              onClickSignIn();
                             },
                             child: const Text('Sign in'))
                       ],

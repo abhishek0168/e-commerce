@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/services/firebase_services.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
-import 'package:ecommerce_app/view_model/data_from_firebase.dart';
+import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -24,6 +24,7 @@ class AdminPageViewModel extends ChangeNotifier {
   final productSizeM = TextEditingController(text: '0');
   final productSizeL = TextEditingController(text: '0');
   final productSizeXL = TextEditingController(text: '0');
+  final productDiscountedprice = TextEditingController(text: '0');
 
 // variables
   List<File> images = [];
@@ -41,7 +42,7 @@ class AdminPageViewModel extends ChangeNotifier {
   ];
 
   bool isLoading = false;
-
+  bool isUpdate = false;
   ProductStatus? productStatus = ProductStatus.available;
 
   // instances
@@ -53,6 +54,12 @@ class AdminPageViewModel extends ChangeNotifier {
 
   // init fucntion
   void init() async {}
+
+  // product update function
+  void updateProduct(ProductModel product) {
+    isUpdate = !isUpdate;
+    
+  }
 
   // radio button
 
@@ -112,6 +119,14 @@ class AdminPageViewModel extends ChangeNotifier {
         '${int.parse(productSizeS.text) + int.parse(productSizeM.text) + int.parse(productSizeL.text) + int.parse(productSizeXL.text)}';
   }
 
+  // discount price
+  void findDiscountPrice() {
+    int price = int.parse(productPrice.text);
+    int discount = int.parse(productDiscount.text);
+    int discountPrice = (price - ((discount / 100) * price)).toInt();
+    productDiscountedprice.text = '$discountPrice';
+  }
+
   //button section
 
   Future<void> showAlertBox(BuildContext context) {
@@ -150,6 +165,7 @@ class AdminPageViewModel extends ChangeNotifier {
     productSizeM.text = '0';
     productSizeL.text = '0';
     productSizeXL.text = '0';
+    productDiscountedprice.text = '0';
     genderDropDownValue = genderItemValues[0];
     categoryDropValue = categories[0];
     productStatus = ProductStatus.available;
@@ -182,6 +198,7 @@ class AdminPageViewModel extends ChangeNotifier {
       productColor: productColor.text,
       productStock: int.parse(productStock.text),
       productDiscount: int.parse(productDiscount.text),
+      productDiscountedprice: int.parse(productDiscountedprice.text),
       productCategory: categoryDropValue,
       productImages: imageUrls,
       status: productStatus == ProductStatus.available ? true : false,

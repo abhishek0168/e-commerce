@@ -12,7 +12,9 @@ class AdminProductViewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.update))],
+      ),
       body: ListView(children: [
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,

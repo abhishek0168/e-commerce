@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/services/firebase_services.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,7 @@ class DataFromFirebase extends ChangeNotifier {
 
   Future<void> callPrductDetails() async {
     productsData = await productServices.getProductDetails();
+    log('$productsData product details callProductDetails()');
     notifyListeners();
   }
 

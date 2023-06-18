@@ -10,6 +10,7 @@ class ProductModel {
   final String productColor;
   final int productStock;
   final int productDiscount;
+  final int productDiscountedprice;
   final String productCategory;
   final List<dynamic> productImages;
   final bool status;
@@ -24,6 +25,7 @@ class ProductModel {
     required this.productColor,
     required this.productStock,
     required this.productDiscount,
+    required this.productDiscountedprice,
     required this.productCategory,
     required this.productImages,
     required this.status,
@@ -39,6 +41,7 @@ class ProductModel {
         'productColor': productColor,
         'productStock': productStock,
         'productDiscount': productDiscount,
+        'productDiscountedprice': productDiscountedprice,
         'productCategory': productCategory,
         'productImages': productImages,
         'status': status,
@@ -57,6 +60,7 @@ class ProductModel {
       productColor: data['productColor'],
       productStock: data['productStock'],
       productDiscount: data['productDiscount'],
+      productDiscountedprice: data['productDiscountedprice'],
       productCategory: data['productCategory'],
       productImages: data['productImages'],
       status: data['status'],
