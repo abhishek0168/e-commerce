@@ -1,10 +1,13 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/model/user_model/user_model.dart';
+import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class UserAuthFirebase {
+  final userDetailsViewModel = UserDetailsViewModel();
   Future<String?> signIn({
     required String email,
     required String password,
@@ -14,6 +17,8 @@ class UserAuthFirebase {
         email: email,
         password: password,
       );
+      await userDetailsViewModel.fetchingUserData();
+      log('signIn function called');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         return ('No user found for that email.');
@@ -33,6 +38,8 @@ class UserAuthFirebase {
         email: email,
         password: password,
       );
+      await userDetailsViewModel.fetchingUserData();
+      log('createUser function called');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         return ('The password provided is too weak.');
@@ -46,7 +53,8 @@ class UserAuthFirebase {
   }
 
   Future<void> signOut() async {
-    DefaultCacheManager().emptyCache();
+    await FirebaseAuth.instance.signOut();
+    // await FirebaseFirestore.instance.clearPersistence();
   }
 
   Future<void> addUserToDatabase(UserModel model) async {

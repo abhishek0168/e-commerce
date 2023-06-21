@@ -11,9 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProductViewPage extends StatelessWidget {
-  const ProductViewPage({super.key, required this.productData});
+  const ProductViewPage({super.key, required this.productDetails});
 
-  final ProductModel productData;
+  final ProductModel productDetails;
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -23,7 +23,7 @@ class ProductViewPage extends StatelessWidget {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              title: Text(productData.brandName),
+              title: Text(productDetails.brandName),
               snap: true,
               floating: true,
               toolbarHeight: 40,
@@ -42,7 +42,7 @@ class ProductViewPage extends StatelessWidget {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: productData.productImages
+                children: productDetails.productImages
                     .map(
                       (image) => SizedBox(
                         height: (screenSize.height) - 250,
@@ -80,37 +80,41 @@ class ProductViewPage extends StatelessWidget {
                           style: TextStyle(fontSize: 18),
                         ),
                       ),
-                      AddToFavoriteWidget(
-                        onPress: () {},
+                      Consumer<UserDetailsViewModel>(
+                        builder: (context, value, child) => AddToFavoriteWidget(
+                            productId: productDetails.id,
+                            onPress: () {
+                              value.addtoFav(productDetails.id);
+                            }),
                       ),
                     ],
                   ),
                   height20,
-                  // H2(text: productData.brandName),
+                  // H2(text: productDetails.brandName),
                   Text(
-                    productData.productName,
+                    productDetails.productName,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(
-                    child: productData.productDiscount < 1
-                        ? H2(text: '₹${productData.productPrice}')
+                    child: productDetails.productDiscount < 1
+                        ? H2(text: '₹${productDetails.productPrice}')
                         : Row(
                             children: [
                               Text(
-                                '₹${productData.productPrice}',
+                                '₹${productDetails.productPrice}',
                                 style: CustomeTextStyle.productName.copyWith(
                                     color: AppColors.grayColor,
                                     decoration: TextDecoration.lineThrough),
                               ),
                               width10,
                               Text(
-                                '₹${productData.productDiscountedprice} ',
+                                '₹${productDetails.productDiscountedprice} ',
                                 style: CustomeTextStyle.productName
                                     .copyWith(color: AppColors.primaryColor),
                               ),
                               Text(
-                                '(${productData.productDiscount}% off)',
+                                '(${productDetails.productDiscount}% off)',
                                 style: const TextStyle(
                                     color: AppColors.primaryColor),
                               ),
@@ -133,7 +137,7 @@ class ProductViewPage extends StatelessWidget {
                   height20,
                   FilledButton(
                     onPressed: () async {
-                      await userDetailsViewModel.addToCart(productData.id);
+                      await userDetailsViewModel.addToCart(productDetails.id);
                     },
                     style: const ButtonStyle(
                       minimumSize: MaterialStatePropertyAll(
@@ -142,7 +146,7 @@ class ProductViewPage extends StatelessWidget {
                     ),
                     child: Consumer<UserDetailsViewModel>(
                       builder: (context, value, child) => Text(
-                        !value.userCart.contains(productData.id)
+                        !value.userCart.contains(productDetails.id)
                             ? 'Add to Cart'
                             : 'Remove from Cart',
                         style: const TextStyle(

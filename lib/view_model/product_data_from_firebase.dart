@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/services/firebase_services.dart';
+import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 
 class DataFromFirebase extends ChangeNotifier {
@@ -15,16 +16,19 @@ class DataFromFirebase extends ChangeNotifier {
 // instances
 
   final productServices = FirebaseProductServices();
+  final userDetailsViewModel = UserDetailsViewModel();
 
 // Functions
   void init() async {
     await callPrductDetails();
+    await userDetailsViewModel.fetchingUserData();
     selectedProductsData = productsData;
   }
 
   Future<void> callPrductDetails() async {
     productsData = await productServices.getProductDetails();
     log('$productsData product details callProductDetails()');
+    selectedProductsData = productsData;
     notifyListeners();
   }
 

@@ -23,6 +23,7 @@ class SignInPageViewModel extends ChangeNotifier {
 
   // Auth page
   bool isLogin = true;
+  
 
   void toggle() {
     isLogin = !isLogin;

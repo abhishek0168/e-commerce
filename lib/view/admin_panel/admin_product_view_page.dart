@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/utils/constants.dart';
+import 'package:ecommerce_app/view/admin_panel/admin_product_adding_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
+import 'package:ecommerce_app/view_model/admin_page_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AdminProductViewPage extends StatelessWidget {
   const AdminProductViewPage({super.key, required this.productData});
@@ -11,9 +14,27 @@ class AdminProductViewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
+    final controller = Provider.of<AdminPageViewModel>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.update))],
+        actions: [
+          TextButton(
+            onPressed: () {
+              controller.assignValues(productData);
+              controller.isUpdate = true;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AdminProductAddingPage(
+                    productId: productData.id,
+                  ),
+                ),
+              );
+            },
+            child: const Text('Edit'),
+          ),
+        ],
       ),
       body: ListView(children: [
         SingleChildScrollView(
@@ -63,10 +84,58 @@ class AdminProductViewPage extends StatelessWidget {
                     color: AppColors.primaryColor),
               ),
               height10,
-              Text(productData.productColor),
-              Text(productData.productCategory),
-              Text('${productData.productDiscount}'),
-              Text(productData.brandName)
+              RichText(
+                text: TextSpan(
+                  text: 'Color : ',
+                  style: const TextStyle(
+                      color: AppColors.blackColor, fontSize: 16),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: productData.productColor,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              RichText(
+                text: TextSpan(
+                  text: 'Category : ',
+                  style: const TextStyle(
+                      color: AppColors.blackColor, fontSize: 16),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: productData.productCategory,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              RichText(
+                text: TextSpan(
+                  text: 'Discount : ',
+                  style: const TextStyle(
+                      color: AppColors.blackColor, fontSize: 16),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: '${productData.productDiscount}%',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              RichText(
+                text: TextSpan(
+                  text: 'Status : ',
+                  style: const TextStyle(
+                      color: AppColors.blackColor, fontSize: 16),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: productData.status ? 'available' : 'unavailable',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         )

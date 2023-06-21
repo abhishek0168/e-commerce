@@ -9,15 +9,20 @@ class FirebaseUserDetails {
   final _firebaseAuth = FirebaseAuth.instance;
 
   Future<UserModel?> getUserDetails() async {
-    final user = _firebaseAuth.currentUser!.email;
-    log(user.toString());
+    final user = _firebaseAuth.currentUser;
+    log('${user?.email} getUserDetails()');
+    log('${user?.uid} getUserDetails()');
     try {
       if (user != null) {
-        final snapshot =
-            await _db.collection('Users').where('Email', isEqualTo: user).get();
+        final snapshot = await _db
+            .collection('Users')
+            .where('Email', isEqualTo: user.email)
+            .get();
 
         final userData = snapshot.docs.map((e) => UserModel.fromJson(e)).single;
         return userData;
+      } else {
+        log('user is null getUserDetails()');
       }
     } catch (e) {
       log('$e getUserDetails()=>');
@@ -36,10 +41,26 @@ class FirebaseUserDetails {
       Map<String, dynamic> updateJson = {
         'userCart': productList,
       };
-      docUser
-          .update(updateJson)
-          .then((value) => log('Cart updated'))
-          .catchError((error) => log("Failed to update user: $error"));
+      docUser.update(updateJson).then((value) {
+        log('Cart updated');
+      });
+    } catch (e) {
+      log('$e updateUserCart()=>');
+    }
+  }
+
+  void updateUserFav(
+    List<String> productList,
+    String userId,
+  ) {
+    try {
+      final docUser = _db.collection('Users').doc(userId);
+      Map<String, dynamic> updateJson = {
+        'userFavList': productList,
+      };
+      docUser.update(updateJson).then(
+            (value) => log('User FavList updated'),
+          );
     } catch (e) {
       log('$e updateUserCart()=>');
     }

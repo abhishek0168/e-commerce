@@ -1,4 +1,5 @@
 import 'package:ecommerce_app/utils/constants.dart';
+import 'package:ecommerce_app/view/admin_panel/admin_product_diplaying_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view_model/admin_page_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -7,14 +8,24 @@ import 'package:provider/provider.dart';
 import 'admin_text_form_widget.dart';
 
 class AdminProductAddingPage extends StatelessWidget {
-  AdminProductAddingPage({super.key});
+  AdminProductAddingPage({super.key, this.productId});
   final formGlobalKey = GlobalKey<FormState>();
+  final String? productId;
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<AdminPageViewModel>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add product"),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+            onPressed: () {
+              controller.clearValues();
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back)),
+        title: controller.isUpdate
+            ? const Text("Update product")
+            : const Text('Add product'),
       ),
       body: Stack(
         children: [
@@ -131,7 +142,7 @@ class AdminProductAddingPage extends StatelessWidget {
                           ),
                           Flexible(
                             child: RadioListTile<ProductStatus>(
-                              value: ProductStatus.nuavailable,
+                              value: ProductStatus.unavailable,
                               groupValue: controller.productStatus,
                               onChanged: (value) {
                                 controller.changeStatus(value);
@@ -314,14 +325,27 @@ class AdminProductAddingPage extends StatelessWidget {
                     children: [
                       Flexible(
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (controller.images.isEmpty) {
                               controller.imageErrorSnackbar(context);
                             }
                             if (formGlobalKey.currentState!.validate() &&
                                 controller.images.isNotEmpty) {
                               formGlobalKey.currentState!.save();
-                              controller.uploadValues();
+                              if (controller.isUpdate) {
+                                await controller.updateValues(productId!);
+                                if (context.mounted) {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AdminDisplayPage(),
+                                    ),
+                                  );
+                                }
+                              } else {
+                                await controller.uploadValues();
+                              }
                             }
                           },
                           style: ButtonStyle(

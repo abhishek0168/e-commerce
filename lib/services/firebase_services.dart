@@ -53,6 +53,28 @@ class FirebaseProductServices {
     await productDoc.set(dataModel);
   }
 
+  Future<void> updateDatabase(ProductModel model) async {
+    final productDoc = _db.collection('Products').doc(model.id);
+    final productData = ProductModel(
+      id: model.id,
+      productName: model.productName,
+      productPrice: model.productPrice,
+      brandName: model.brandName,
+      gender: model.gender,
+      productSizes: model.productSizes,
+      productColor: model.productColor,
+      productStock: model.productStock,
+      productDiscount: model.productDiscount,
+      productDiscountedprice: model.productDiscountedprice,
+      productCategory: model.productCategory,
+      productImages: model.productImages,
+      status: model.status,
+    );
+
+    final dataModel = productData.toJson();
+    await productDoc.update(dataModel);
+  }
+
   Future<List<ProductModel>> getProductDetails() async {
     final productDetails = await _db.collection('Products').get();
 

@@ -1,6 +1,7 @@
 import 'package:ecommerce_app/view/admin_panel/admin_product_adding_page.dart';
 import 'package:ecommerce_app/view/admin_panel/admin_product_view_page.dart';
 import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
+import 'package:ecommerce_app/view_model/admin_page_viewmodel.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ class AdminDisplayPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final firebaseDataController = Provider.of<DataFromFirebase>(context);
+    final adminPageController = Provider.of<AdminPageViewModel>(context);
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxisScrolled) => [
@@ -67,6 +69,7 @@ class AdminDisplayPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+      adminPageController.isUpdate = false;    
           Navigator.push(
             context,
             MaterialPageRoute(

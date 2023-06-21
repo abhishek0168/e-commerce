@@ -43,12 +43,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => DataFromFirebase()..init()),
+        ChangeNotifierProvider(create: (_) => UserDetailsViewModel()..init()),
         ChangeNotifierProvider(create: (_) => MainPageViewModel()),
         ChangeNotifierProvider(create: (_) => ShopViewModel()),
         ChangeNotifierProvider(create: (_) => AdminPageViewModel()),
-        ChangeNotifierProvider(create: (_) => DataFromFirebase()..init()),
         ChangeNotifierProvider(create: (_) => SignInPageViewModel()),
-        ChangeNotifierProvider(create: (_) => UserDetailsViewModel()..init()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

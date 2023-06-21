@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view/widgets/add_to_favorite.dart';
@@ -5,24 +6,16 @@ import 'package:ecommerce_app/view/widgets/heading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce_app/view/widgets/text_styles.dart';
 import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
+import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProductCard extends StatelessWidget {
   const ProductCard({
     super.key,
-    required this.imageUrl,
-    required this.brandName,
-    required this.productName,
-    required this.productPrice,
-    required this.productDiscount,
-    required this.productDiscountPrice,
+    required this.productModel,
   });
-  final String imageUrl;
-  final String brandName;
-  final String productName;
-  final int productPrice;
-  final int productDiscount;
-  final int productDiscountPrice;
+  final ProductModel productModel;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +35,7 @@ class ProductCard extends StatelessWidget {
                       color: AppColors.whiteColor,
                     ),
                     child: CachedNetworkImage(
-                      imageUrl: imageUrl,
+                      imageUrl: productModel.productImages[0],
                       placeholder: (context, url) => threeDotLoadingAnimation(),
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
@@ -62,11 +55,11 @@ class ProductCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                H2(text: brandName),
+                H2(text: productModel.brandName),
                 SizedBox(
                   height: 35,
                   child: Text(
-                    productName,
+                    productModel.productName,
                     style: TextStyle(
                       color: AppColors.grayColor,
                       fontSize: 12,
@@ -76,16 +69,16 @@ class ProductCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  child: productDiscount == 0
+                  child: productModel.productDiscount == 0
                       ? Row(
                           children: [
-                            H2(text: '₹ $productPrice'),
+                            H2(text: '₹ ${productModel.productPrice}'),
                           ],
                         )
                       : Row(
                           children: [
                             Text(
-                              '₹ $productPrice',
+                              '₹ ${productModel.productPrice}',
                               style: CustomeTextStyle.productName.copyWith(
                                 decoration: TextDecoration.lineThrough,
                                 color: AppColors.grayColor,
@@ -93,7 +86,7 @@ class ProductCard extends StatelessWidget {
                             ),
                             width10,
                             Text(
-                              '₹$productDiscountPrice',
+                              '₹${productModel.productDiscountedprice}',
                               style: CustomeTextStyle.productName.copyWith(
                                 color: AppColors.primaryColor,
                               ),
@@ -105,11 +98,10 @@ class ProductCard extends StatelessWidget {
             ),
           ),
           Row(
-            // mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Visibility(
-                visible: productDiscount < 1 ? false : true,
+                visible: productModel.productDiscount < 1 ? false : true,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10, top: 10),
                   child: Container(
@@ -122,7 +114,7 @@ class ProductCard extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      '$productDiscount%',
+                      '${productModel.productDiscount}%',
                       style: const TextStyle(color: AppColors.whiteColor),
                     ),
                   ),
@@ -141,10 +133,12 @@ class ProductCard extends StatelessWidget {
             top: 120,
             right: 0,
             bottom: 0,
-            child: AddToFavoriteWidget(
-              onPress: () {
-                
-              },
+            child: Consumer<UserDetailsViewModel>(
+              builder: (context, value, child) => AddToFavoriteWidget(
+                  productId: productModel.id,
+                  onPress: () {
+                    value.addtoFav(productModel.id);
+                  }),
             ),
           )
         ],

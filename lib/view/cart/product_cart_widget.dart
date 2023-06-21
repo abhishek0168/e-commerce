@@ -19,6 +19,7 @@ class ProductCartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ValueNotifier<int> counter = ValueNotifier(1);
     final userDetailsController = Provider.of<UserDetailsViewModel>(context);
     return Dismissible(
       key: Key(productData.id),
@@ -108,17 +109,26 @@ class ProductCartWidget extends StatelessWidget {
                       child: Row(
                         children: [
                           IconButton.outlined(
-                            onPressed: () {},
+                            onPressed: () {
+                              if (counter.value > 1) {
+                                counter.value--;
+                              }
+                            },
                             icon: const Icon(Icons.remove),
                           ),
-                          Container(
-                            width: 20,
-                            height: 20,
-                            alignment: Alignment.center,
-                            child: const Text('1'),
+                          ValueListenableBuilder(
+                            valueListenable: counter,
+                            builder: (context, value, child) => Container(
+                              width: 20,
+                              height: 20,
+                              alignment: Alignment.center,
+                              child: Text('$value'),
+                            ),
                           ),
                           IconButton.outlined(
-                            onPressed: () {},
+                            onPressed: () {
+                              counter.value++;
+                            },
                             icon: const Icon(Icons.add),
                           ),
                         ],

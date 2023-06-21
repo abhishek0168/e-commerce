@@ -8,11 +8,10 @@ import 'package:flutter/foundation.dart';
 class UserDetailsViewModel extends ChangeNotifier {
   List<String> userCart = [];
   List<String> userFavs = [];
-  String userName = '';
-  String userEmail = '';
-  String userId = '';
+
   UserModel? userData;
   int totalProductPrice = 0;
+  List<ProductModel> productData = [];
 
   // instances
   final firebaseUserService = FirebaseUserDetails();
@@ -25,15 +24,16 @@ class UserDetailsViewModel extends ChangeNotifier {
     userData = await firebaseUserService.getUserDetails();
 
     if (userData != null) {
-      userName = userData!.userName;
-      userEmail = userData!.userEmail;
-      userId = userData!.id;
       userCart = userData!.userCart!.map((e) => e.toString()).toList();
       userFavs = userData!.userFavList!.map((e) => e.toString()).toList();
-      log('$userCart fetchingUserData()=>');
-      log('$userFavs fetchingUserData()=>');
+      log(
+        'fetchingUserData()=> ${userData!.userName}',
+      );
+      log('fetchingUserData()=> ${userData!.userEmail}');
+      log('fetchingUserData()=> $userCart');
+      log('fetchingUserData()=> $userFavs');
     } else {
-      log('User is empty fetchingUserData()=>');
+      log('fetchingUserData()=> User is empty');
     }
     notifyListeners();
   }
@@ -44,25 +44,30 @@ class UserDetailsViewModel extends ChangeNotifier {
     } else {
       userCart.add(productId);
     }
-    await firebaseUserService.updateUserCart(userCart, userId);
+    await firebaseUserService.updateUserCart(userCart, userData!.id);
     fetchingUserData();
     notifyListeners();
   }
 
-  List<ProductModel> getCartProducts(List<ProductModel> productList) {
-    List<ProductModel> productData = [];
-    try {
-      totalProductPrice = 0;
-      productData = productList
-          .where((product) => userCart.contains(product.id))
-          .toList();
-      for (var product in productData) {
-        totalProductPrice += product.productDiscountedprice;
-      }
-      // notifyListeners();
-    } catch (e) {
-      log('$e error from getCartProducts()=>');
+  void getCartProducts(List<ProductModel> productList) {
+    totalProductPrice = 0;
+    productData =
+        productList.where((product) => userCart.contains(product.id)).toList();
+    for (var product in productData) {
+      totalProductPrice += product.productDiscountedprice;
     }
-    return productData;
+
+    log('getCartProducts()=> $totalProductPrice');
+    // notifyListeners();
+  }
+
+  void addtoFav(String productId) {
+    if (userFavs.contains(productId)) {
+      userFavs.remove(productId);
+    } else {
+      userFavs.add(productId);
+    }
+    firebaseUserService.updateUserFav(userFavs, userData!.id);
+    notifyListeners();
   }
 }

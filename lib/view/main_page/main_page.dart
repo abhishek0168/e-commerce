@@ -6,6 +6,7 @@ import 'package:ecommerce_app/view/shop/shop_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view_model/main_page_view_model.dart';
 import 'package:ecommerce_app/view_model/sign_in_page_viewmodel.dart';
+import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +25,10 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final mainPageviewModel = context.watch<MainPageViewModel>();
     final signInpageViewModel = Provider.of<SignInPageViewModel>(context);
+    final userDetailsController = Provider.of<UserDetailsViewModel>(context);
+    // userDetailsController.fetchingUserData();
 
+    final screenSize = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         appBar: mainPageviewModel.currentIndex == 0
@@ -32,13 +36,37 @@ class MainPage extends StatelessWidget {
             : AppBar(
                 actions: [
                   IconButton(
-                      onPressed: () {
-                        signInpageViewModel.signOutUser();
-                      },
-                      icon: const Icon(Icons.logout))
+                    onPressed: () {
+                      signInpageViewModel.signOutUser();
+                      mainPageviewModel.changeIndex(0);
+                    },
+                    icon: const Icon(Icons.logout),
+                  ),
                 ],
               ),
         body: screens[mainPageviewModel.currentIndex],
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: mainPageviewModel.currentIndex == 2
+            ? mainPageviewModel.isScrolling
+                ? userDetailsController.userCart.isNotEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: FilledButton(
+                          onPressed: () {
+                            // Afthab().postMethod();
+                            // Afthab().request();
+                          },
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all(
+                              Size(screenSize.width, 50),
+                            ),
+                          ),
+                          child: const Text('Buy Now'),
+                        ),
+                      )
+                    : null
+                : null
+            : null,
         bottomNavigationBar: NavigationBarTheme(
           data: const NavigationBarThemeData(
             elevation: 0,

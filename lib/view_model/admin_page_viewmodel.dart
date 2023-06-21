@@ -9,7 +9,7 @@ import 'package:image_picker/image_picker.dart';
 
 enum ProductStatus {
   available,
-  nuavailable,
+  unavailable,
 }
 
 class AdminPageViewModel extends ChangeNotifier {
@@ -54,12 +54,6 @@ class AdminPageViewModel extends ChangeNotifier {
 
   // init fucntion
   void init() async {}
-
-  // product update function
-  void updateProduct(ProductModel product) {
-    isUpdate = !isUpdate;
-    
-  }
 
   // radio button
 
@@ -206,6 +200,59 @@ class AdminPageViewModel extends ChangeNotifier {
     await productServices.uploadDataToDatabase(productModel);
     await dataFromFirebase.callPrductDetails();
     clearValues();
+    changeLoading();
+    notifyListeners();
+  }
+
+  void assignValues(ProductModel product) {
+    productName.text = product.productName;
+    productPrice.text = product.productPrice;
+    brandName.text = product.brandName;
+    productColor.text = product.productColor;
+    productStock.text = '${product.productStock}';
+    productDiscount.text = '${product.productDiscount}';
+    productSizeS.text = '${product.productSizes['S']}';
+    productSizeM.text = '${product.productSizes['M']}';
+    productSizeL.text = '${product.productSizes['L']}';
+    productSizeXL.text = '${product.productSizes['XL']}';
+    productDiscountedprice.text = "${product.productDiscountedprice}";
+    genderDropDownValue = product.gender;
+    categoryDropValue = product.productCategory;
+    productStatus =
+        product.status ? ProductStatus.available : ProductStatus.unavailable;
+    notifyListeners();
+  }
+
+  Future<void> updateValues(String productId) async {
+    await changeLoading();
+    List<String> imageUrls;
+
+    imageUrls = await productServices.uploadImageToStorage(images);
+    final productModel = ProductModel(
+      id: productId,
+      productName: productName.text,
+      productPrice: productPrice.text,
+      brandName: brandName.text,
+      gender: genderDropDownValue,
+      productSizes: {
+        'S': int.parse(productSizeS.text),
+        'M': int.parse(productSizeM.text),
+        'L': int.parse(productSizeL.text),
+        'XL': int.parse(productSizeXL.text),
+      },
+      productColor: productColor.text,
+      productStock: int.parse(productStock.text),
+      productDiscount: int.parse(productDiscount.text),
+      productDiscountedprice: int.parse(productDiscountedprice.text),
+      productCategory: categoryDropValue,
+      productImages: imageUrls,
+      status: productStatus == ProductStatus.available ? true : false,
+    );
+    await productServices.updateDatabase(productModel);
+    clearValues();
+    isUpdate = false;
+
+    await dataFromFirebase.callPrductDetails();
     changeLoading();
     notifyListeners();
   }
