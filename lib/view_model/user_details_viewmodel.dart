@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/model/user_model/user_model.dart';
+import 'package:ecommerce_app/services/firebase_services.dart';
 import 'package:ecommerce_app/services/firebase_user_services.dart';
+import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
 import 'package:flutter/foundation.dart';
 
 class UserDetailsViewModel extends ChangeNotifier {
@@ -11,12 +13,17 @@ class UserDetailsViewModel extends ChangeNotifier {
 
   UserModel? userData;
   int totalProductPrice = 0;
-  List<ProductModel> productData = [];
+  List<ProductModel> cartProductData = [];
+  List<ProductModel> favProductData = [];
+  List<ProductModel> totalProductData = [];
 
   // instances
   final firebaseUserService = FirebaseUserDetails();
+  final dataFromFirebase = DataFromFirebase();
+  final productServices = FirebaseProductServices();
 
   Future<void> init() async {
+    totalProductData = await productServices.getProductDetails();
     await fetchingUserData();
   }
 
@@ -26,19 +33,23 @@ class UserDetailsViewModel extends ChangeNotifier {
     if (userData != null) {
       userCart = userData!.userCart!.map((e) => e.toString()).toList();
       userFavs = userData!.userFavList!.map((e) => e.toString()).toList();
-      log(
-        'fetchingUserData()=> ${userData!.userName}',
-      );
-      log('fetchingUserData()=> ${userData!.userEmail}');
-      log('fetchingUserData()=> $userCart');
-      log('fetchingUserData()=> $userFavs');
+      log('fetchingUserData()=> name : ${userData!.userName}');
+      log('fetchingUserData()=> id : ${userData!.id}');
+      log('fetchingUserData()=> email : ${userData!.userEmail}');
+      log('fetchingUserData()=> cart : $userCart');
+      log('fetchingUserData()=> fav : $userFavs');
+      log('fetchingUserData()=> Total product data : $totalProductData');
     } else {
       log('fetchingUserData()=> User is empty');
     }
+    cartProductData = sortProducts(userCart);
+    cartTotalPrice();
+    favProductData = sortProducts(userFavs);
     notifyListeners();
   }
 
   Future<void> addToCart(String productId) async {
+    userData = await firebaseUserService.getUserDetails();
     if (userCart.contains(productId)) {
       userCart.remove(productId);
     } else {
@@ -49,16 +60,20 @@ class UserDetailsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getCartProducts(List<ProductModel> productList) {
-    totalProductPrice = 0;
-    productData =
-        productList.where((product) => userCart.contains(product.id)).toList();
-    for (var product in productData) {
-      totalProductPrice += product.productDiscountedprice;
-    }
+  List<ProductModel> sortProducts(List<String> userCart) {
+    final tempList = totalProductData
+        .where((product) => userCart.contains(product.id))
+        .toList();
 
     log('getCartProducts()=> $totalProductPrice');
-    // notifyListeners();
+    return tempList;
+  }
+
+  void cartTotalPrice() {
+    totalProductPrice = 0;
+    for (var product in cartProductData) {
+      totalProductPrice += product.productDiscountedprice;
+    }
   }
 
   void addtoFav(String productId) {
@@ -68,6 +83,7 @@ class UserDetailsViewModel extends ChangeNotifier {
       userFavs.add(productId);
     }
     firebaseUserService.updateUserFav(userFavs, userData!.id);
+    fetchingUserData();
     notifyListeners();
   }
 }

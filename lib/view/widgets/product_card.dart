@@ -14,8 +14,12 @@ class ProductCard extends StatelessWidget {
   const ProductCard({
     super.key,
     required this.productModel,
+    this.iconWidget,
+    this.closeWidget,
   });
   final ProductModel productModel;
+  final Widget? iconWidget;
+  final Widget? closeWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -120,13 +124,7 @@ class ProductCard extends StatelessWidget {
                   ),
                 ),
               ),
-              // IconButton(
-              //   onPressed: () {},
-              //   icon: const Icon(
-              //     Icons.clear,
-              //     size: 25,
-              //   ),
-              // )
+              if (closeWidget != null) closeWidget!,
             ],
           ),
           Positioned(

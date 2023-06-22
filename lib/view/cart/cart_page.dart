@@ -2,7 +2,7 @@ import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/cart/product_cart_widget.dart';
 import 'package:ecommerce_app/view/widgets/page_empty_message.dart';
 import 'package:ecommerce_app/view/widgets/text_styles.dart';
-import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
+
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,9 +12,8 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userDetailsController = Provider.of<UserDetailsViewModel>(context);
-    final productDetails = Provider.of<DataFromFirebase>(context);
     final screenSize = MediaQuery.of(context).size;
-    userDetailsController.getCartProducts(productDetails.productsData);
+    // userDetailsController.fetchingUserData();
     return userDetailsController.userCart.isNotEmpty
         ? SingleChildScrollView(
             child: Column(
@@ -44,12 +43,12 @@ class CartPage extends StatelessWidget {
                             physics: const ClampingScrollPhysics(),
                             itemBuilder: (context, index) {
                               return ProductCartWidget(
-                                  productData: value.productData[index],
+                                  productData: value.cartProductData[index],
                                   screenSize: screenSize);
                             },
                             separatorBuilder: (context, index) =>
                                 const Divider(),
-                            itemCount: value.productData.length);
+                            itemCount: value.cartProductData.length);
                       },
                     ),
                   ),

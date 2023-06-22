@@ -16,12 +16,10 @@ class DataFromFirebase extends ChangeNotifier {
 // instances
 
   final productServices = FirebaseProductServices();
-  final userDetailsViewModel = UserDetailsViewModel();
 
 // Functions
   void init() async {
     await callPrductDetails();
-    await userDetailsViewModel.fetchingUserData();
     selectedProductsData = productsData;
   }
 
