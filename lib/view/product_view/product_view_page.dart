@@ -84,7 +84,7 @@ class ProductViewPage extends StatelessWidget {
                         builder: (context, value, child) => AddToFavoriteWidget(
                             productId: productDetails.id,
                             onPress: () {
-                              value.addtoFav(productDetails.id);
+                              value.addtoFav(productDetails.id, context);
                             }),
                       ),
                     ],

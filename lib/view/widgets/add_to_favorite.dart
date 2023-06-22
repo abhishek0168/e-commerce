@@ -13,7 +13,8 @@ class AddToFavoriteWidget extends StatelessWidget {
   final VoidCallback onPress;
   @override
   Widget build(BuildContext context) {
-    final userDetailsController = Provider.of<UserDetailsViewModel>(context);
+    final userDetailsController =
+        Provider.of<UserDetailsViewModel>(context, listen: true);
     return CircleAvatar(
       backgroundColor: AppColors.whiteColor,
       child: IconButton(

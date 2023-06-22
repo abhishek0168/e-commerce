@@ -1,11 +1,13 @@
-import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/product_view/product_view_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
+import 'package:ecommerce_app/view/widgets/add_to_cart_widget.dart';
+import 'package:ecommerce_app/view/widgets/add_to_favorite.dart';
 import 'package:ecommerce_app/view/widgets/page_empty_message.dart';
 import 'package:ecommerce_app/view/widgets/product_card.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
 import 'package:ecommerce_app/view_model/shop_view_model.dart';
+import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +27,7 @@ class ShopPage extends StatelessWidget {
     final shopViewModel = context.watch<ShopViewModel>();
     final firebaseDataController = Provider.of<DataFromFirebase>(context);
 
-    // final userDetailsController = Provider.of<UserDetails>(context);
+    final userDetailsController = Provider.of<UserDetailsViewModel>(context);
     return RefreshIndicator(
       onRefresh: () => firebaseDataController.callPrductDetails(),
       child: Column(
@@ -120,6 +122,16 @@ class ShopPage extends StatelessWidget {
                                     child: ProductCard(
                                       productModel:
                                           value.selectedProductsData[index],
+                                      iconWidget: AddToFavoriteWidget(
+                                          productId: value
+                                              .selectedProductsData[index].id,
+                                          onPress: () {
+                                            userDetailsController.addtoFav(
+                                                value
+                                                    .selectedProductsData[index]
+                                                    .id,
+                                                context);
+                                          }),
                                     ),
                                   ),
                                 ),

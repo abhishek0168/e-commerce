@@ -4,8 +4,9 @@ import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/model/user_model/user_model.dart';
 import 'package:ecommerce_app/services/firebase_services.dart';
 import 'package:ecommerce_app/services/firebase_user_services.dart';
+import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class UserDetailsViewModel extends ChangeNotifier {
   List<String> userCart = [];
@@ -53,10 +54,15 @@ class UserDetailsViewModel extends ChangeNotifier {
     if (userCart.contains(productId)) {
       userCart.remove(productId);
     } else {
+      if (userFavs.contains(productId)) {
+        userFavs.remove(productId);
+        log('addToCart()=> fav : $userFavs');
+        await firebaseUserService.updateUserFav(userFavs, userData!.id);
+      }
       userCart.add(productId);
     }
     await firebaseUserService.updateUserCart(userCart, userData!.id);
-    fetchingUserData();
+    await fetchingUserData();
     notifyListeners();
   }
 
@@ -76,14 +82,35 @@ class UserDetailsViewModel extends ChangeNotifier {
     }
   }
 
-  void addtoFav(String productId) {
-    if (userFavs.contains(productId)) {
-      userFavs.remove(productId);
+  void addtoFav(String productId, BuildContext context) async {
+    if (userCart.contains(productId)) {
+      final snackBar = SnackBar(
+        showCloseIcon: true,
+        closeIconColor: AppColors.blackColor,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        content: const Text(
+          'Product is alredy in cart!',
+          style: TextStyle(
+            color: AppColors.blackColor,
+          ),
+        ),
+        backgroundColor: AppColors.starColor,
+        dismissDirection: DismissDirection.up,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else {
-      userFavs.add(productId);
+      if (userFavs.contains(productId)) {
+        userFavs.remove(productId);
+      } else {
+        userFavs.add(productId);
+      }
+      log('addtoFav()=> fav : $userFavs');
     }
-    firebaseUserService.updateUserFav(userFavs, userData!.id);
-    fetchingUserData();
+    await firebaseUserService.updateUserFav(userFavs, userData!.id);
+    await fetchingUserData();
     notifyListeners();
   }
 }

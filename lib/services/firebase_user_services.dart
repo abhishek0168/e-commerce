@@ -41,7 +41,7 @@ class FirebaseUserDetails {
       Map<String, dynamic> updateJson = {
         'userCart': productList,
       };
-      docUser.update(updateJson).then((value) {
+      await docUser.update(updateJson).then((value) {
         log('Cart updated');
       });
     } catch (e) {
@@ -49,20 +49,20 @@ class FirebaseUserDetails {
     }
   }
 
-  void updateUserFav(
+  Future<void> updateUserFav(
     List<String> productList,
     String userId,
-  ) {
+  ) async {
     try {
       final docUser = _db.collection('Users').doc(userId);
       Map<String, dynamic> updateJson = {
         'userFavList': productList,
       };
-      docUser.update(updateJson).then(
+      await docUser.update(updateJson).then(
             (value) => log('User FavList updated'),
           );
     } catch (e) {
-      log('$e updateUserCart()=>');
+      log('$e updateUserFav()=>');
     }
   }
 }

@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/services/firebase_services.dart';
-import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 
 class DataFromFirebase extends ChangeNotifier {

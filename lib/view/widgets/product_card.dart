@@ -1,28 +1,26 @@
 import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
-import 'package:ecommerce_app/view/widgets/add_to_favorite.dart';
 import 'package:ecommerce_app/view/widgets/heading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce_app/view/widgets/text_styles.dart';
 import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
-import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ProductCard extends StatelessWidget {
   const ProductCard({
     super.key,
     required this.productModel,
-    this.iconWidget,
+    required this.iconWidget,
     this.closeWidget,
   });
   final ProductModel productModel;
-  final Widget? iconWidget;
+  final Widget iconWidget;
   final Widget? closeWidget;
 
   @override
   Widget build(BuildContext context) {
+    // final productDetials = Provider.of<UserDetailsViewModel>(context);
     return SizedBox(
       child: Stack(
         children: [
@@ -131,13 +129,7 @@ class ProductCard extends StatelessWidget {
             top: 120,
             right: 0,
             bottom: 0,
-            child: Consumer<UserDetailsViewModel>(
-              builder: (context, value, child) => AddToFavoriteWidget(
-                  productId: productModel.id,
-                  onPress: () {
-                    value.addtoFav(productModel.id);
-                  }),
-            ),
+            child: iconWidget,
           )
         ],
       ),

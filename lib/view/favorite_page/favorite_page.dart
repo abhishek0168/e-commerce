@@ -1,5 +1,6 @@
 import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/view/product_view/product_view_page.dart';
+import 'package:ecommerce_app/view/widgets/add_to_cart_widget.dart';
 import 'package:ecommerce_app/view/widgets/page_empty_message.dart';
 import 'package:ecommerce_app/view/widgets/product_card.dart';
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
@@ -51,10 +52,16 @@ class FavoritePage extends StatelessWidget {
                                   productModel: productData[index],
                                   closeWidget: IconButton(
                                     onPressed: () {
-                                      userDetailsModel
-                                          .addtoFav(productData[index].id);
+                                      userDetailsModel.addtoFav(
+                                          productData[index].id, context);
                                     },
                                     icon: const Icon(Icons.close),
+                                  ),
+                                  iconWidget: AddtoCartWidget(
+                                    onPress: () {
+                                      userDetailsModel
+                                          .addToCart(productData[index].id);
+                                    },
                                   ),
                                 ),
                               ),
