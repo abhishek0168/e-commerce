@@ -2,6 +2,7 @@ import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/sign_in_and_sign_up/password_reset.dart';
 import 'package:ecommerce_app/view/sign_in_and_sign_up/textfield_widgets.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
+import 'package:ecommerce_app/view/widgets/google_icon_button.dart';
 import 'package:ecommerce_app/view_model/sign_in_page_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -144,26 +145,7 @@ class LogInPage extends StatelessWidget {
                     ),
                     height20,
                     height20,
-                    IconButton(
-                      onPressed: () {},
-                      icon: Container(
-                        width: 70,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: AppColors.whiteColor,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: const Offset(0, 2),
-                              blurRadius: 0.8,
-                              color: AppColors.grayColor,
-                            ),
-                          ],
-                        ),
-                        child:
-                            Image.asset('assets/images/icons8-google-48.png'),
-                      ),
-                    )
+                    const GoogleIconButton(),
                   ],
                 ),
               ),
@@ -174,3 +156,5 @@ class LogInPage extends StatelessWidget {
     );
   }
 }
+
+

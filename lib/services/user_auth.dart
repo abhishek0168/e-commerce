@@ -2,12 +2,13 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/model/user_model/user_model.dart';
-import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
+// import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class UserAuthFirebase {
-  final userDetailsViewModel = UserDetailsViewModel();
+  // final userDetailsViewModel = UserDetailsViewModel();
   Future<String?> signIn({
     required String email,
     required String password,
@@ -17,7 +18,7 @@ class UserAuthFirebase {
         email: email,
         password: password,
       );
-      await userDetailsViewModel.fetchingUserData();
+      // await userDetailsViewModel.fetchingUserData();
       log('signIn function called');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -38,7 +39,7 @@ class UserAuthFirebase {
         email: email,
         password: password,
       );
-      await userDetailsViewModel.fetchingUserData();
+      // await userDetailsViewModel.fetchingUserData();
       log('createUser function called');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -68,5 +69,30 @@ class UserAuthFirebase {
 
     final json = userData.toJson();
     await userDoc.set(json);
+  }
+
+  Future<void> signInWithGoogle() async {
+    final googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) return;
+    log('signInWithGoogle() ${googleUser.email}');
+    log('signInWithGoogle() ${googleUser.id}');
+    log('signInWithGoogle() ${googleUser.displayName}');
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    final userModel = UserModel(
+      id: '',
+      userName: googleUser.displayName!,
+      userEmail: googleUser.email,
+      userPassword: '',
+    );
+
+    await addUserToDatabase(userModel);
+    await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }

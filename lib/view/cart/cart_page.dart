@@ -12,7 +12,7 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userDetailsController = Provider.of<UserDetailsViewModel>(context);
-    final screenSize = MediaQuery.of(context).size;
+    final screenSize = MediaQuery.sizeOf(context);
     // userDetailsController.fetchingUserData();
     return userDetailsController.userCart.isNotEmpty
         ? SingleChildScrollView(

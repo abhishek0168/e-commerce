@@ -34,4 +34,7 @@ class DataFromFirebase extends ChangeNotifier {
         await productServices.getSelectedProductDetails(value);
     notifyListeners();
   }
+
+
+  
 }

@@ -11,7 +11,7 @@ class FirebaseUserDetails {
   Future<UserModel?> getUserDetails() async {
     final user = _firebaseAuth.currentUser;
     log('${user?.email} getUserDetails()');
-    log('${user?.uid} getUserDetails()');
+    log('${user?.uid}  getUserDetails()');
     try {
       if (user != null) {
         final snapshot = await _db
@@ -32,7 +32,7 @@ class FirebaseUserDetails {
   }
 
   Future<void> updateUserCart(
-    List<String> productList,
+    List<Map<dynamic,dynamic>> productList,
     String userId,
   ) async {
     try {

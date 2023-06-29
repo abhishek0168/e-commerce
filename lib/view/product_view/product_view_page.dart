@@ -4,6 +4,7 @@ import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view/widgets/add_to_favorite.dart';
 import 'package:ecommerce_app/view/widgets/heading_widget.dart';
+import 'package:ecommerce_app/view/widgets/product_size_bottom_sheet.dart';
 import 'package:ecommerce_app/view/widgets/text_styles.dart';
 import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
@@ -17,7 +18,7 @@ class ProductViewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final userDetailsViewModel = Provider.of<UserDetailsViewModel>(context);
+    // final userDetailsViewModel = Provider.of<UserDetailsViewModel>(context);
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -50,12 +51,16 @@ class ProductViewPage extends StatelessWidget {
                         child: InteractiveViewer(
                           minScale: 1.0,
                           maxScale: 2.0,
-                          child: CachedNetworkImage(
-                            imageUrl: image,
-                            placeholder: (context, url) =>
-                                threeDotLoadingAnimation(),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
+                          child: Hero(
+                            tag: image,
+                            child: CachedNetworkImage(
+                              imageUrl: image,
+                              placeholder: (context, url) =>
+                                  threeDotLoadingAnimation(),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
@@ -72,20 +77,29 @@ class ProductViewPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      OutlinedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.expand_more),
-                        label: const Text(
-                          'Size',
-                          style: TextStyle(fontSize: 18),
+                      Consumer<UserDetailsViewModel>(
+                        builder: (context, value, child) => OutlinedButton.icon(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) => SizeBottomSheet(
+                                  productDetails: productDetails),
+                            );
+                          },
+                          icon: const Icon(Icons.expand_more),
+                          label: Text(
+                            value.selectedSize ?? 'Size',
+                            style: const TextStyle(fontSize: 18),
+                          ),
                         ),
                       ),
                       Consumer<UserDetailsViewModel>(
                         builder: (context, value, child) => AddToFavoriteWidget(
-                            productId: productDetails.id,
-                            onPress: () {
-                              value.addtoFav(productDetails.id, context);
-                            }),
+                          productId: productDetails.id,
+                          onPress: () {
+                            value.addtoFav(productDetails.id, context);
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -135,18 +149,33 @@ class ProductViewPage extends StatelessWidget {
                     ),
                   ),
                   height20,
-                  FilledButton(
-                    onPressed: () async {
-                      await userDetailsViewModel.addToCart(productDetails.id);
-                    },
-                    style: const ButtonStyle(
-                      minimumSize: MaterialStatePropertyAll(
-                        Size(double.infinity, 50),
+                  Consumer<UserDetailsViewModel>(
+                    builder: (context, value, child) => FilledButton(
+                      onPressed: () async {
+                        if (value.selectedSize == null) {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) =>
+                                SizeBottomSheet(productDetails: productDetails),
+                          );
+                        } else {
+                          await value.addToCart(
+                            productId: productDetails.id,
+                            color: productDetails.productColor,
+                            size: value.selectedSize!,
+                            count: 1,
+                          );
+                        }
+                      },
+                      style: const ButtonStyle(
+                        minimumSize: MaterialStatePropertyAll(
+                          Size(double.infinity, 50),
+                        ),
                       ),
-                    ),
-                    child: Consumer<UserDetailsViewModel>(
-                      builder: (context, value, child) => Text(
-                        !value.userCart.contains(productDetails.id)
+                      child: Text(
+                        !value.userCart.any(
+                          (element) => element['id'] == productDetails.id,
+                        )
                             ? 'Add to Cart'
                             : 'Remove from Cart',
                         style: const TextStyle(

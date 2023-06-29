@@ -79,8 +79,8 @@ class MainPage extends StatelessWidget {
               mainPageviewModel.changeIndex(newIndex);
             },
             labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-            destinations: const [
-              NavigationDestination(
+            destinations: [
+              const NavigationDestination(
                 selectedIcon: Icon(
                   Icons.home,
                   color: AppColors.primaryColor,
@@ -88,7 +88,7 @@ class MainPage extends StatelessWidget {
                 icon: Icon(Icons.home_outlined),
                 label: home,
               ),
-              NavigationDestination(
+              const NavigationDestination(
                 selectedIcon: Icon(
                   Icons.local_grocery_store,
                   color: AppColors.primaryColor,
@@ -97,14 +97,46 @@ class MainPage extends StatelessWidget {
                 label: shop,
               ),
               NavigationDestination(
-                selectedIcon: Icon(
-                  Icons.shopping_bag,
-                  color: AppColors.primaryColor,
+                selectedIcon: Stack(
+                  children: [
+                    const Icon(
+                      Icons.shopping_bag,
+                      color: AppColors.primaryColor,
+                    ),
+                    Visibility(
+                      visible: userDetailsController.userCart.isNotEmpty,
+                      child: Positioned(
+                        top: 0,
+                        right: 0,
+                        child: CircleAvatar(
+                          backgroundColor: AppColors.starColor,
+                          minRadius: 5,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                icon: Icon(Icons.shopping_bag_outlined),
+                icon: Stack(
+                  children: [
+                    const Icon(
+                      Icons.shopping_bag_outlined,
+                    ),
+                    Visibility(
+                      visible: userDetailsController.userCart.isNotEmpty,
+                      child: const Positioned(
+                        top: 0,
+                        right: 0,
+                        child: CircleAvatar(
+                          backgroundColor: AppColors.primaryColor,
+                          minRadius: 5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 label: bag,
               ),
-              NavigationDestination(
+              const NavigationDestination(
                 selectedIcon: Icon(
                   Icons.favorite,
                   color: AppColors.primaryColor,
@@ -112,7 +144,7 @@ class MainPage extends StatelessWidget {
                 icon: Icon(Icons.favorite_border),
                 label: fav,
               ),
-              NavigationDestination(
+              const NavigationDestination(
                 selectedIcon: Icon(
                   Icons.person,
                   color: AppColors.primaryColor,

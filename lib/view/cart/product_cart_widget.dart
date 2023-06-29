@@ -25,7 +25,10 @@ class ProductCartWidget extends StatelessWidget {
       key: Key(productData.id),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) => userDetailsController.addToCart(
-        productData.id,
+        productId: productData.id,
+        color: productData.productColor,
+        size: '',
+        count: 1,
       ),
       background: Container(
         padding: const EdgeInsets.only(right: 10),

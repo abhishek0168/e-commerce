@@ -9,7 +9,7 @@ import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
 import 'package:flutter/material.dart';
 
 class UserDetailsViewModel extends ChangeNotifier {
-  List<String> userCart = [];
+  List<Map<dynamic, dynamic>> userCart = [];
   List<String> userFavs = [];
 
   UserModel? userData;
@@ -17,6 +17,8 @@ class UserDetailsViewModel extends ChangeNotifier {
   List<ProductModel> cartProductData = [];
   List<ProductModel> favProductData = [];
   List<ProductModel> totalProductData = [];
+  String? selectedSize;
+  int sizeIsSelected = -1;
 
   // instances
   final firebaseUserService = FirebaseUserDetails();
@@ -32,7 +34,14 @@ class UserDetailsViewModel extends ChangeNotifier {
     userData = await firebaseUserService.getUserDetails();
 
     if (userData != null) {
-      userCart = userData!.userCart!.map((e) => e.toString()).toList();
+      userCart = userData!.userCart!
+          .map((e) => {
+                'id': e['id'],
+                'count': e['count'],
+                'color': e['color'],
+                'size': e['size']
+              })
+          .toList();
       userFavs = userData!.userFavList!.map((e) => e.toString()).toList();
       log('fetchingUserData()=> name : ${userData!.userName}');
       log('fetchingUserData()=> id : ${userData!.id}');
@@ -43,35 +52,61 @@ class UserDetailsViewModel extends ChangeNotifier {
     } else {
       log('fetchingUserData()=> User is empty');
     }
-    cartProductData = sortProducts(userCart);
+    cartProductData = sortCartProducts(userCart);
     cartTotalPrice();
-    favProductData = sortProducts(userFavs);
+    favProductData = sortFavProducts(userFavs);
     notifyListeners();
   }
 
-  Future<void> addToCart(String productId) async {
+  Future<void> addToCart({
+    required String productId,
+    required String color,
+    required String size,
+    required int count,
+  }) async {
     userData = await firebaseUserService.getUserDetails();
-    if (userCart.contains(productId)) {
-      userCart.remove(productId);
+
+    bool productStatus = userCart.any((element) => element['id'] == productId);
+
+    if (productStatus) {
+      userCart.removeWhere((element) => element['id'] == productId);
     } else {
-      if (userFavs.contains(productId)) {
-        userFavs.remove(productId);
-        log('addToCart()=> fav : $userFavs');
-        await firebaseUserService.updateUserFav(userFavs, userData!.id);
-      }
-      userCart.add(productId);
+      final toMap = {
+        'id': productId,
+        'count': count,
+        'color': color,
+        'size': size,
+      };
+      userCart.add(toMap);
     }
+
     await firebaseUserService.updateUserCart(userCart, userData!.id);
+    selectedSize = null;
     await fetchingUserData();
     notifyListeners();
   }
 
-  List<ProductModel> sortProducts(List<String> userCart) {
-    final tempList = totalProductData
-        .where((product) => userCart.contains(product.id))
-        .toList();
+  List<ProductModel> sortCartProducts(List<Map<dynamic, dynamic>> userCart) {
+    Map<dynamic, dynamic> cartMap = {};
+    for (var element in userCart) {
+      cartMap[element['id']] = true;
+    }
+
+    List<ProductModel> tempList = [];
+    for (var product in totalProductData) {
+      if (cartMap.containsKey(product.id)) {
+        tempList.add(product);
+      }
+    }
 
     log('getCartProducts()=> $totalProductPrice');
+    return tempList;
+  }
+
+  List<ProductModel> sortFavProducts(List<String> favList) {
+    final tempList = totalProductData
+        .where((element) => favList.contains(element.id))
+        .toList();
     return tempList;
   }
 
@@ -83,34 +118,21 @@ class UserDetailsViewModel extends ChangeNotifier {
   }
 
   void addtoFav(String productId, BuildContext context) async {
-    if (userCart.contains(productId)) {
-      final snackBar = SnackBar(
-        showCloseIcon: true,
-        closeIconColor: AppColors.blackColor,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        content: const Text(
-          'Product is alredy in cart!',
-          style: TextStyle(
-            color: AppColors.blackColor,
-          ),
-        ),
-        backgroundColor: AppColors.starColor,
-        dismissDirection: DismissDirection.up,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    if (userFavs.contains(productId)) {
+      userFavs.remove(productId);
     } else {
-      if (userFavs.contains(productId)) {
-        userFavs.remove(productId);
-      } else {
-        userFavs.add(productId);
-      }
-      log('addtoFav()=> fav : $userFavs');
+      userFavs.add(productId);
     }
+    log('addtoFav()=> fav : $userFavs');
+
     await firebaseUserService.updateUserFav(userFavs, userData!.id);
     await fetchingUserData();
+    notifyListeners();
+  }
+
+  void changeSize(bool value, int index, String productSize) {
+    sizeIsSelected = value ? index : -1;
+    selectedSize = productSize;
     notifyListeners();
   }
 }

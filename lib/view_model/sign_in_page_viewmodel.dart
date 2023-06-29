@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:ecommerce_app/model/user_model/user_model.dart';
 import 'package:ecommerce_app/services/user_auth.dart';
 import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
+import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 
 class SignInPageViewModel extends ChangeNotifier {
@@ -23,7 +24,9 @@ class SignInPageViewModel extends ChangeNotifier {
 
   // Auth page
   bool isLogin = true;
-  
+
+  // instances
+  final userDetailsModel = UserDetailsViewModel();
 
   void toggle() {
     isLogin = !isLogin;
@@ -70,18 +73,11 @@ class SignInPageViewModel extends ChangeNotifier {
     required String password,
     BuildContext? context,
   }) async {
-    if (context != null) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => threeDotLoadingAnimation(),
-      );
-    }
-
     String? message = await firebseUserAuth.signIn(
       email: email,
       password: password,
     );
+    userDetailsModel.fetchingUserData();
     notifyListeners();
     return message;
   }
@@ -91,21 +87,15 @@ class SignInPageViewModel extends ChangeNotifier {
     required String password,
     BuildContext? context,
   }) async {
-    if (context != null) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => threeDotLoadingAnimation(),
-      );
-    }
     String? message =
         await firebseUserAuth.createUser(email: email, password: password);
-
+    userDetailsModel.fetchingUserData();
     return message;
   }
 
   Future<void> signOutUser() async {
     await firebseUserAuth.signOut();
+    userDetailsModel.fetchingUserData();
   }
 
   Future<void> createUser() async {
@@ -117,6 +107,11 @@ class SignInPageViewModel extends ChangeNotifier {
     );
 
     await firebseUserAuth.addUserToDatabase(userData);
+  }
+
+  Future<void> signInWithGoogle() async {
+    await firebseUserAuth.signInWithGoogle();
+    notifyListeners();
   }
 
   @override

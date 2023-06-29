@@ -36,11 +36,16 @@ class ProductCard extends StatelessWidget {
                     decoration: const BoxDecoration(
                       color: AppColors.whiteColor,
                     ),
-                    child: CachedNetworkImage(
-                      imageUrl: productModel.productImages[0],
-                      placeholder: (context, url) => threeDotLoadingAnimation(),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
+                    child: Hero(
+                      tag: productModel.productImages[0],
+                      child: CachedNetworkImage(
+                        imageUrl: productModel.productImages[0],
+                        placeholder: (context, url) =>
+                            threeDotLoadingAnimation(),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),

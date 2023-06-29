@@ -1,8 +1,11 @@
+
 import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/view/product_view/product_view_page.dart';
+import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view/widgets/add_to_cart_widget.dart';
 import 'package:ecommerce_app/view/widgets/page_empty_message.dart';
 import 'package:ecommerce_app/view/widgets/product_card.dart';
+import 'package:ecommerce_app/view/widgets/product_size_bottom_sheet.dart';
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -59,8 +62,37 @@ class FavoritePage extends StatelessWidget {
                                   ),
                                   iconWidget: AddtoCartWidget(
                                     onPress: () {
-                                      userDetailsModel
-                                          .addToCart(productData[index].id);
+                                      if (value.cartProductData.any((element) =>
+                                          element.id ==
+                                          productData[index].id)) {
+                                        final snackBar = SnackBar(
+                                          content: const Text(
+                                            'Product alredy in cart !',
+                                            style: TextStyle(
+                                                color: AppColors.blackColor),
+                                          ),
+                                          backgroundColor: AppColors.starColor,
+                                          behavior: SnackBarBehavior.floating,
+                                          duration: const Duration(seconds: 2),
+                                        );
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(snackBar);
+                                      } else if (value.selectedSize == null) {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) => SizeBottomSheet(
+                                            productDetails: productData[index],
+                                          ),
+                                        );
+                                      } else {
+                                        value.addToCart(
+                                          productId: productData[index].id,
+                                          color:
+                                              productData[index].productColor,
+                                          size: value.selectedSize!,
+                                          count: 1,
+                                        );
+                                      }
                                     },
                                   ),
                                 ),
