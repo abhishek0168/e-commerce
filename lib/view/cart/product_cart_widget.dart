@@ -19,8 +19,11 @@ class ProductCartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ValueNotifier<int> counter = ValueNotifier(1);
     final userDetailsController = Provider.of<UserDetailsViewModel>(context);
+    Map<dynamic, dynamic> prodcutDetails = userDetailsController.userCart
+        .where((element) => element['id'] == productData.id)
+        .single;
+    ValueNotifier<int> counter = ValueNotifier(prodcutDetails['count']);
     return Dismissible(
       key: Key(productData.id),
       direction: DismissDirection.endToStart,
@@ -80,10 +83,10 @@ class ProductCartWidget extends StatelessWidget {
                       text: TextSpan(
                         text: 'Size : ',
                         style: DefaultTextStyle.of(context).style,
-                        children: const <TextSpan>[
+                        children: <TextSpan>[
                           TextSpan(
-                            text: 'size',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            text: prodcutDetails['size'],
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -93,10 +96,10 @@ class ProductCartWidget extends StatelessWidget {
                       text: TextSpan(
                         text: 'Color : ',
                         style: DefaultTextStyle.of(context).style,
-                        children: const <TextSpan>[
+                        children: <TextSpan>[
                           TextSpan(
-                            text: 'color',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            text: prodcutDetails['color'],
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),

@@ -28,7 +28,6 @@ class MainPage extends StatelessWidget {
     final userDetailsController = Provider.of<UserDetailsViewModel>(context);
     // userDetailsController.fetchingUserData();
 
-    final screenSize = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         appBar: mainPageviewModel.currentIndex == 0
@@ -45,28 +44,6 @@ class MainPage extends StatelessWidget {
                 ],
               ),
         body: screens[mainPageviewModel.currentIndex],
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: mainPageviewModel.currentIndex == 2
-            ? mainPageviewModel.isScrolling
-                ? userDetailsController.userCart.isNotEmpty
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: FilledButton(
-                          onPressed: () {
-                            // Afthab().postMethod();
-                            // Afthab().request();
-                          },
-                          style: ButtonStyle(
-                            minimumSize: MaterialStateProperty.all(
-                              Size(screenSize.width, 50),
-                            ),
-                          ),
-                          child: const Text('Buy Now'),
-                        ),
-                      )
-                    : null
-                : null
-            : null,
         bottomNavigationBar: NavigationBarTheme(
           data: const NavigationBarThemeData(
             elevation: 0,

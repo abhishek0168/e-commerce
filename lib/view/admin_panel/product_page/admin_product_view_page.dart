@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/utils/constants.dart';
-import 'package:ecommerce_app/view/admin_panel/admin_product_adding_page.dart';
+import 'package:ecommerce_app/view/admin_panel/product_page/admin_product_adding_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view_model/admin_page_viewmodel.dart';
 import 'package:flutter/material.dart';

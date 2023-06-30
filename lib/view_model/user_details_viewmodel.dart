@@ -4,7 +4,6 @@ import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/model/user_model/user_model.dart';
 import 'package:ecommerce_app/services/firebase_services.dart';
 import 'package:ecommerce_app/services/firebase_user_services.dart';
-import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +18,7 @@ class UserDetailsViewModel extends ChangeNotifier {
   List<ProductModel> totalProductData = [];
   String? selectedSize;
   int sizeIsSelected = -1;
+  final promoCodeController = TextEditingController();
 
   // instances
   final firebaseUserService = FirebaseUserDetails();
@@ -103,18 +103,20 @@ class UserDetailsViewModel extends ChangeNotifier {
     return tempList;
   }
 
-  List<ProductModel> sortFavProducts(List<String> favList) {
-    final tempList = totalProductData
-        .where((element) => favList.contains(element.id))
-        .toList();
-    return tempList;
-  }
-
   void cartTotalPrice() {
     totalProductPrice = 0;
     for (var product in cartProductData) {
       totalProductPrice += product.productDiscountedprice;
     }
+  }
+
+  updateCartCount() {}
+
+  List<ProductModel> sortFavProducts(List<String> favList) {
+    final tempList = totalProductData
+        .where((element) => favList.contains(element.id))
+        .toList();
+    return tempList;
   }
 
   void addtoFav(String productId, BuildContext context) async {

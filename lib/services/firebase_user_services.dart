@@ -39,7 +39,7 @@ class FirebaseUserDetails {
       log('$userId userID updateUserCart()=>');
       final docUser = _db.collection('Users').doc(userId);
       Map<String, dynamic> updateJson = {
-        'userCart': productList,
+        'userCart': productList,  
       };
       await docUser.update(updateJson).then((value) {
         log('Cart updated');
@@ -47,6 +47,10 @@ class FirebaseUserDetails {
     } catch (e) {
       log('$e updateUserCart()=>');
     }
+  }
+
+  updateCartProductCount(int count)async{
+
   }
 
   Future<void> updateUserFav(

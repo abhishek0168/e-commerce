@@ -1,5 +1,6 @@
-import 'package:ecommerce_app/view/admin_panel/admin_product_adding_page.dart';
-import 'package:ecommerce_app/view/admin_panel/admin_product_view_page.dart';
+import 'package:ecommerce_app/view/admin_panel/product_page/admin_product_adding_page.dart';
+import 'package:ecommerce_app/view/admin_panel/product_page/admin_product_view_page.dart';
+import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
 import 'package:ecommerce_app/view_model/admin_page_viewmodel.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
@@ -14,6 +15,43 @@ class AdminDisplayPage extends StatelessWidget {
     final firebaseDataController = Provider.of<DataFromFirebase>(context);
     final adminPageController = Provider.of<AdminPageViewModel>(context);
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: const BoxDecoration(
+                color: AppColors.primaryColor,
+              ),
+              child: UnconstrainedBox(
+                child: Image.asset(
+                  'assets/logo/glimp_logo_white.png',
+                  fit: BoxFit.contain,
+                  width: 150,
+                ),
+              ),
+            ),
+            ListTile(
+              title: const Text('User Details'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('promo code'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxisScrolled) => [
           const SliverAppBar(
@@ -69,7 +107,7 @@ class AdminDisplayPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-      adminPageController.isUpdate = false;    
+          adminPageController.isUpdate = false;
           Navigator.push(
             context,
             MaterialPageRoute(
