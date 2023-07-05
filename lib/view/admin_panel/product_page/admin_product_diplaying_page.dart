@@ -1,5 +1,7 @@
 import 'package:ecommerce_app/view/admin_panel/product_page/admin_product_adding_page.dart';
 import 'package:ecommerce_app/view/admin_panel/product_page/admin_product_view_page.dart';
+import 'package:ecommerce_app/view/admin_panel/promo_code_page/promo_code_adding.dart';
+import 'package:ecommerce_app/view/admin_panel/user_page/users_display.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
 import 'package:ecommerce_app/view_model/admin_page_viewmodel.dart';
@@ -34,19 +36,23 @@ class AdminDisplayPage extends StatelessWidget {
             ListTile(
               title: const Text('User Details'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const UsersDisplay(),
+                  ),
+                );
               },
             ),
             ListTile(
               title: const Text('promo code'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PromoCodeAddingPage(),
+                  ),
+                );
               },
             ),
           ],

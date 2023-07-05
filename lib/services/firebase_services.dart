@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:ecommerce_app/model/product_model/product_model.dart';
+import 'package:ecommerce_app/model/promo_code_model/promo_code_model.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -53,6 +54,22 @@ class FirebaseProductServices {
     await productDoc.set(dataModel);
   }
 
+  Future<void> uploadPromoCodeToDatabase(PromoCodeModel model) async {
+    final promoDoc = _db.collection('Promocodes').doc();
+    final promoCodeData = PromoCodeModel(
+      id: promoDoc.id,
+      createdDate: model.createdDate,
+      expiryDate: model.expiryDate,
+      promoCode: model.promoCode,
+      status: model.status,
+      discount: model.discount,
+      usedUsers: model.usedUsers,
+    );
+
+    final dataModel = promoCodeData.toJson();
+    await promoDoc.set(dataModel);
+  }
+
   Future<void> updateDatabase(ProductModel model) async {
     final productDoc = _db.collection('Products').doc(model.id);
     final productData = ProductModel(
@@ -82,6 +99,14 @@ class FirebaseProductServices {
         productDetails.docs.map((e) => ProductModel.fromSnapshot(e)).toList();
 
     return productData;
+  }
+
+  Future<List<PromoCodeModel>> getPromoCodes() async {
+    final promoCodes = await _db.collection('Promocodes').get();
+    final promoCodeData =
+        promoCodes.docs.map((e) => PromoCodeModel.fromSnapshot(e)).toList();
+    log('getPromoCodes()=> promocode list : $promoCodeData');
+    return promoCodeData;
   }
 
   Future<List<ProductModel>> getSelectedProductDetails(String value) async {

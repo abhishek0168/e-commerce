@@ -95,4 +95,19 @@ class UserAuthFirebase {
     await addUserToDatabase(userModel);
     await FirebaseAuth.instance.signInWithCredential(credential);
   }
+
+  Future<bool> emailVerification() async {
+    bool status = FirebaseAuth.instance.currentUser!.emailVerified;
+    if (!status) {
+      await sendVerificationMail();
+    }
+    return status;
+  }
+
+  Future<void> sendVerificationMail() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      await user!.sendEmailVerification();
+    } catch (e) {}
+  }
 }

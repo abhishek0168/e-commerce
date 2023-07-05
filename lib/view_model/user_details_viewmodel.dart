@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 class UserDetailsViewModel extends ChangeNotifier {
   List<Map<dynamic, dynamic>> userCart = [];
   List<String> userFavs = [];
-
+  List<UserModel> usersList = [];
   UserModel? userData;
   int totalProductPrice = 0;
   List<ProductModel> cartProductData = [];
@@ -18,7 +18,6 @@ class UserDetailsViewModel extends ChangeNotifier {
   List<ProductModel> totalProductData = [];
   String? selectedSize;
   int sizeIsSelected = -1;
-  final promoCodeController = TextEditingController();
 
   // instances
   final firebaseUserService = FirebaseUserDetails();
@@ -28,6 +27,15 @@ class UserDetailsViewModel extends ChangeNotifier {
   Future<void> init() async {
     totalProductData = await productServices.getProductDetails();
     await fetchingUserData();
+  }
+
+  Future<UserModel?> getUser() async {
+    return userData = await firebaseUserService.getUserDetails();
+  }
+
+  Future<List<UserModel>> getAllUsers() async {
+    usersList = await firebaseUserService.getAllUsers();
+    return usersList;
   }
 
   Future<void> fetchingUserData() async {
@@ -42,6 +50,7 @@ class UserDetailsViewModel extends ChangeNotifier {
                 'size': e['size']
               })
           .toList();
+      // final bahu = userData!.userStatus;
       userFavs = userData!.userFavList!.map((e) => e.toString()).toList();
       log('fetchingUserData()=> name : ${userData!.userName}');
       log('fetchingUserData()=> id : ${userData!.id}');

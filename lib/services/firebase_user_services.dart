@@ -8,6 +8,12 @@ class FirebaseUserDetails {
   final _db = FirebaseFirestore.instance;
   final _firebaseAuth = FirebaseAuth.instance;
 
+  Future<List<UserModel>> getAllUsers() async {
+    final users = await _db.collection('Users').get();
+    final userList = users.docs.map((e) => UserModel.fromJson(e)).toList();
+    return userList;
+  }
+
   Future<UserModel?> getUserDetails() async {
     final user = _firebaseAuth.currentUser;
     log('${user?.email} getUserDetails()');
@@ -32,14 +38,14 @@ class FirebaseUserDetails {
   }
 
   Future<void> updateUserCart(
-    List<Map<dynamic,dynamic>> productList,
+    List<Map<dynamic, dynamic>> productList,
     String userId,
   ) async {
     try {
       log('$userId userID updateUserCart()=>');
       final docUser = _db.collection('Users').doc(userId);
       Map<String, dynamic> updateJson = {
-        'userCart': productList,  
+        'userCart': productList,
       };
       await docUser.update(updateJson).then((value) {
         log('Cart updated');
@@ -49,9 +55,7 @@ class FirebaseUserDetails {
     }
   }
 
-  updateCartProductCount(int count)async{
-
-  }
+  updateCartProductCount(int count) async {}
 
   Future<void> updateUserFav(
     List<String> productList,

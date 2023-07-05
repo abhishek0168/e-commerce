@@ -84,57 +84,45 @@ class AdminProductViewPage extends StatelessWidget {
                     color: AppColors.primaryColor),
               ),
               height10,
-              RichText(
-                text: TextSpan(
-                  text: 'Color : ',
-                  style: const TextStyle(
-                      color: AppColors.blackColor, fontSize: 16),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: productData.productColor,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-              RichText(
-                text: TextSpan(
-                  text: 'Category : ',
-                  style: const TextStyle(
-                      color: AppColors.blackColor, fontSize: 16),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: productData.productCategory,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-              RichText(
-                text: TextSpan(
-                  text: 'Discount : ',
-                  style: const TextStyle(
-                      color: AppColors.blackColor, fontSize: 16),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: '${productData.productDiscount}%',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-              RichText(
-                text: TextSpan(
-                  text: 'Status : ',
-                  style: const TextStyle(
-                      color: AppColors.blackColor, fontSize: 16),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: productData.status ? 'available' : 'unavailable',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
+              DataTable(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                columns: const [
+                  DataColumn(label: Text('Product Details')),
+                  DataColumn(label: Text('Values')),
+                ],
+                rows: [
+                  DataRow(
+                    cells: [
+                      const DataCell(Text('Color')),
+                      DataCell(Text(productData.productColor)),
+                    ],
+                  ),
+                  DataRow(
+                    cells: [
+                      const DataCell(Text('Category')),
+                      DataCell(Text(productData.productCategory)),
+                    ],
+                  ),
+                  DataRow(
+                    cells: [
+                      const DataCell(Text('Discount')),
+                      DataCell(Text('${productData.productDiscount}%')),
+                    ],
+                  ),
+                  DataRow(
+                    cells: [
+                      const DataCell(Text('Status')),
+                      DataCell(Text(
+                          productData.status ? 'available' : 'unavailable')),
+                    ],
+                  ),
+                  DataRow(
+                    cells: [
+                      const DataCell(Text('Total Stock')),
+                      DataCell(Text("${productData.productStock}")),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),

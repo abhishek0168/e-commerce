@@ -3,7 +3,11 @@ import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/admin_panel/product_page/admin_product_diplaying_page.dart';
 import 'package:ecommerce_app/view/main_page/main_page.dart';
 import 'package:ecommerce_app/view/sign_in_and_sign_up/Auth_page.dart';
+import 'package:ecommerce_app/view/theme/app_color_theme.dart';
+import 'package:ecommerce_app/view/widgets/custome_snackbar.dart';
+import 'package:ecommerce_app/view/widgets/waiting_page.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
+import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +18,7 @@ class SelectPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dataFromFirebase = Provider.of<DataFromFirebase>(context);
+    final userViewModel = Provider.of<UserDetailsViewModel>(context);
     return Scaffold(
       body: SafeArea(
           child: Center(
@@ -47,9 +52,7 @@ class SelectPage extends StatelessWidget {
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
+                            return const WaitingPage();
                           } else if (snapshot.connectionState ==
                               ConnectionState.none) {
                             return const Center(
@@ -59,8 +62,16 @@ class SelectPage extends StatelessWidget {
                             return const Center(
                               child: Text('Somthing went wrong !'),
                             );
-                          } else if (snapshot.hasData) {
+                          } else if (snapshot.hasData &&
+                              userViewModel.userData!.userStatus) {
                             return MainPage();
+                          } else if (!userViewModel.userData!.userStatus) {
+                            final snackBar = CustomeSnackBar().snackBar1(
+                                bgColor: AppColors.primaryColor,
+                                content: 'This account is tem blocked');
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                            return Container();
                           } else {
                             return const AuthPage();
                           }

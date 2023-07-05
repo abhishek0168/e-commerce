@@ -113,6 +113,11 @@ class SignInPageViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> verifyEmail() async {
+    bool status = await firebseUserAuth.emailVerification();
+    return status;
+  }
+
   @override
   void dispose() {
     emailController.dispose();

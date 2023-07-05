@@ -23,7 +23,7 @@ class AdminTextForm extends StatelessWidget {
           focusedBorder: const OutlineInputBorder(),
           errorBorder: const OutlineInputBorder(
               borderSide: BorderSide(color: AppColors.primaryColor)),
-              focusedErrorBorder: const OutlineInputBorder(),
+          focusedErrorBorder: const OutlineInputBorder(),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
