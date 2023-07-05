@@ -4,6 +4,7 @@ import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/model/user_model/user_model.dart';
 import 'package:ecommerce_app/services/firebase_services.dart';
 import 'package:ecommerce_app/services/firebase_user_services.dart';
+import 'package:ecommerce_app/services/user_auth.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
 import 'package:flutter/material.dart';
 
@@ -18,15 +19,22 @@ class UserDetailsViewModel extends ChangeNotifier {
   List<ProductModel> totalProductData = [];
   String? selectedSize;
   int sizeIsSelected = -1;
+  bool isLoading = false;
 
   // instances
   final firebaseUserService = FirebaseUserDetails();
   final dataFromFirebase = DataFromFirebase();
   final productServices = FirebaseProductServices();
+  final userAuth = UserAuthFirebase();
 
   Future<void> init() async {
     totalProductData = await productServices.getProductDetails();
     await fetchingUserData();
+  }
+
+  void changeLoading() {
+    isLoading = !isLoading;
+    notifyListeners();
   }
 
   Future<UserModel?> getUser() async {
@@ -55,6 +63,7 @@ class UserDetailsViewModel extends ChangeNotifier {
       log('fetchingUserData()=> name : ${userData!.userName}');
       log('fetchingUserData()=> id : ${userData!.id}');
       log('fetchingUserData()=> email : ${userData!.userEmail}');
+      log('fetchingUserData()=> status : ${userData!.userStatus}');
       log('fetchingUserData()=> cart : $userCart');
       log('fetchingUserData()=> fav : $userFavs');
       log('fetchingUserData()=> Total product data : $totalProductData');
@@ -144,6 +153,15 @@ class UserDetailsViewModel extends ChangeNotifier {
   void changeSize(bool value, int index, String productSize) {
     sizeIsSelected = value ? index : -1;
     selectedSize = productSize;
+    notifyListeners();
+  }
+
+  Future<void> userStatus(String userId, bool userStatus) async {
+    changeLoading();
+    await firebaseUserService.changeUserStatus(!userStatus, userId);
+
+    usersList = await firebaseUserService.getAllUsers();
+    changeLoading();
     notifyListeners();
   }
 }

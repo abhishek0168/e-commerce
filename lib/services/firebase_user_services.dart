@@ -73,4 +73,14 @@ class FirebaseUserDetails {
       log('$e updateUserFav()=>');
     }
   }
+
+  Future<void> changeUserStatus(bool status, String userId) async {
+    final docUser = _db.collection('Users').doc(userId);
+    Map<String, dynamic> updateJson = {
+      'status': status,
+    };
+    await docUser
+        .update(updateJson)
+        .then((value) => log('changeUserStatus()=> User status changed'));
+  }
 }

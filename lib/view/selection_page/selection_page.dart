@@ -3,8 +3,6 @@ import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/admin_panel/product_page/admin_product_diplaying_page.dart';
 import 'package:ecommerce_app/view/main_page/main_page.dart';
 import 'package:ecommerce_app/view/sign_in_and_sign_up/Auth_page.dart';
-import 'package:ecommerce_app/view/theme/app_color_theme.dart';
-import 'package:ecommerce_app/view/widgets/custome_snackbar.dart';
 import 'package:ecommerce_app/view/widgets/waiting_page.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
@@ -65,13 +63,6 @@ class SelectPage extends StatelessWidget {
                           } else if (snapshot.hasData &&
                               userViewModel.userData!.userStatus) {
                             return MainPage();
-                          } else if (!userViewModel.userData!.userStatus) {
-                            final snackBar = CustomeSnackBar().snackBar1(
-                                bgColor: AppColors.primaryColor,
-                                content: 'This account is tem blocked');
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
-                            return Container();
                           } else {
                             return const AuthPage();
                           }

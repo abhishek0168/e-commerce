@@ -7,7 +7,9 @@ class WaitingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: threeDotLoadingAnimation(),
+      body: Container(
+        child: threeDotLoadingAnimation(),
+      ),
     );
   }
 }

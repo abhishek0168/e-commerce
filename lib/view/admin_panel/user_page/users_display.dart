@@ -27,7 +27,7 @@ class UsersDisplay extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                UserDetails(userData: usersList[index]),
+                                UserDetails(userId: usersList[index].id),
                           ),
                         );
                       },
