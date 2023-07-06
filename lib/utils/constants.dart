@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 /* sized box */
@@ -15,3 +16,5 @@ const bag = 'Bag';
 
 /* padding */
 const paddingVertical10 = EdgeInsets.symmetric(vertical: 10);
+
+

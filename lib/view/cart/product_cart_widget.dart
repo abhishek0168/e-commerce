@@ -28,11 +28,11 @@ class ProductCartWidget extends StatelessWidget {
       key: Key(productData.id),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) => userDetailsController.addToCart(
-        productId: productData.id,
-        color: productData.productColor,
-        size: '',
-        count: 1,
-      ),
+          productId: productData.id,
+          color: productData.productColor,
+          size: '',
+          count: 1,
+          context: context),
       background: Container(
         padding: const EdgeInsets.only(right: 10),
         decoration: BoxDecoration(
@@ -40,9 +40,13 @@ class ProductCartWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         alignment: Alignment.centerRight,
-        child: const Text(
-          'Remove from Cart',
-          style: TextStyle(color: AppColors.whiteColor),
+        child: const Padding(
+          padding: EdgeInsets.only(right: 10),
+          child: Icon(
+            Icons.delete,
+            color: AppColors.whiteColor,
+            size: 30,
+          ),
         ),
       ),
       child: Row(
@@ -118,6 +122,11 @@ class ProductCartWidget extends StatelessWidget {
                             onPressed: () {
                               if (counter.value > 1) {
                                 counter.value--;
+                                userDetailsController.updateCartCount(
+                                  count: counter.value,
+                                  prodcutDetails: prodcutDetails,
+                                  context: context,
+                                );
                               }
                             },
                             icon: const Icon(Icons.remove),
@@ -133,7 +142,13 @@ class ProductCartWidget extends StatelessWidget {
                           ),
                           IconButton.outlined(
                             onPressed: () {
-                              counter.value++;
+                              int sizeCount = productData
+                                  .productSizes[prodcutDetails['size']];
+                              if (counter.value < sizeCount) counter.value++;
+                              userDetailsController.updateCartCount(
+                                  context: context,
+                                  count: counter.value,
+                                  prodcutDetails: prodcutDetails);
                             },
                             icon: const Icon(Icons.add),
                           ),

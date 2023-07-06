@@ -164,6 +164,7 @@ class ProductViewPage extends StatelessWidget {
                             color: productDetails.productColor,
                             size: value.selectedSize!,
                             count: 1,
+                            context: context,
                           );
                         }
                       },

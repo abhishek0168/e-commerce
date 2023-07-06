@@ -22,22 +22,26 @@ class CartPage extends StatelessWidget {
     // userDetailsController.fetchingUserData();
     if (userDetailsController.userCart.isNotEmpty) {
       return Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(children: [
-            Expanded(child: Consumer<UserDetailsViewModel>(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Expanded(
+              child: Consumer<UserDetailsViewModel>(
                 builder: (context, value, child) {
-              return ListView.separated(
-                shrinkWrap: true,
-                physics: const ClampingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return ProductCartWidget(
-                      productData: value.cartProductData[index],
-                      screenSize: screenSize);
+                  return ListView.separated(
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return ProductCartWidget(
+                          productData: value.cartProductData[index],
+                          screenSize: screenSize);
+                    },
+                    separatorBuilder: (context, index) => const Divider(),
+                    itemCount: value.cartProductData.length,
+                  );
                 },
-                separatorBuilder: (context, index) => const Divider(),
-                itemCount: value.cartProductData.length,
-              );
-            })),
+              ),
+            ),
             height10,
             TextFormField(
               controller: promoCodeController.promoCodeKeyController,
@@ -162,18 +166,23 @@ class CartPage extends StatelessWidget {
             height10,
             const Divider(),
             height10,
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text(
-                'Total amount : ',
-                style: CustomeTextStyle.productName
-                    .copyWith(color: AppColors.grayColor),
-              ),
-              Text(
-                '₹${userDetailsController.totalProductPrice}',
-                style: CustomeTextStyle.productName,
-              )
-            ])
-          ]));
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Total amount : ',
+                  style: CustomeTextStyle.productName
+                      .copyWith(color: AppColors.grayColor),
+                ),
+                Text(
+                  '₹${userDetailsController.totalProductPrice}',
+                  style: CustomeTextStyle.productName,
+                )
+              ],
+            ),
+          ],
+        ),
+      );
     } else {
       return const PageEmptyMessage();
     }

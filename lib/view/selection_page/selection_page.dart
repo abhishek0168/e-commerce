@@ -1,3 +1,4 @@
+
 import 'package:ecommerce_app/utils/constants.dart';
 
 import 'package:ecommerce_app/view/admin_panel/product_page/admin_product_diplaying_page.dart';
@@ -5,6 +6,7 @@ import 'package:ecommerce_app/view/main_page/main_page.dart';
 import 'package:ecommerce_app/view/sign_in_and_sign_up/Auth_page.dart';
 import 'package:ecommerce_app/view/widgets/waiting_page.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
+import 'package:ecommerce_app/view_model/sign_in_page_viewmodel.dart';
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,7 @@ class SelectPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final dataFromFirebase = Provider.of<DataFromFirebase>(context);
     final userViewModel = Provider.of<UserDetailsViewModel>(context);
+    final authController = Provider.of<SignInPageViewModel>(context);
     return Scaffold(
       body: SafeArea(
           child: Center(
@@ -25,22 +28,24 @@ class SelectPage extends StatelessWidget {
           children: [
             height10,
             ElevatedButton(
-                onPressed: () async {
-                  await dataFromFirebase.callPrductDetails();
-                  if (context.mounted) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AdminDisplayPage(),
-                      ),
-                    );
-                  }
-                },
-                child: const Text('Admin Page')),
+              onPressed: () async {
+                await dataFromFirebase.callPrductDetails();
+                if (context.mounted) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AdminDisplayPage(),
+                    ),
+                  );
+                }
+              },
+              child: const Text('Admin Page'),
+            ),
             height10,
             ElevatedButton(
               onPressed: () async {
                 await dataFromFirebase.callPrductDetails();
+                await userViewModel.fetchingUserData();
                 if (context.mounted) {
                   Navigator.push(
                     context,
@@ -60,9 +65,12 @@ class SelectPage extends StatelessWidget {
                             return const Center(
                               child: Text('Somthing went wrong !'),
                             );
-                          } else if (snapshot.hasData &&
-                              userViewModel.userData!.userStatus) {
+                          } else if (snapshot.hasData) {
                             return MainPage();
+                          } else if (snapshot.hasData &&
+                              userViewModel.userData!.userStatus == false) {
+                            authController.signOutUser();
+                            return const AuthPage();
                           } else {
                             return const AuthPage();
                           }

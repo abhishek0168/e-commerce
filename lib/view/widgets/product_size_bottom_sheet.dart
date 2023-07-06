@@ -75,10 +75,12 @@ class SizeBottomSheet extends StatelessWidget {
                   ? null
                   : () {
                       userDetailsModel.addToCart(
-                          productId: productDetails.id,
-                          color: productDetails.productColor,
-                          size: userDetailsModel.selectedSize!,
-                          count: 1);
+                        productId: productDetails.id,
+                        color: productDetails.productColor,
+                        size: userDetailsModel.selectedSize!,
+                        count: 1,
+                        context: context,
+                      );
                       Navigator.pop(context);
                     },
               style: const ButtonStyle(

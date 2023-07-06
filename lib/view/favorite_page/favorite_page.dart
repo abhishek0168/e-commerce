@@ -91,6 +91,7 @@ class FavoritePage extends StatelessWidget {
                                               productData[index].productColor,
                                           size: value.selectedSize!,
                                           count: 1,
+                                          context: context,
                                         );
                                       }
                                     },
