@@ -16,12 +16,16 @@ class UserDetailsViewModel extends ChangeNotifier {
   List<UserModel> usersList = [];
   UserModel? userData;
   int totalProductPrice = 0;
+  double totalProductPriceWithoutDiscount = 0;
+  double discountPrice = 0;
   List<ProductModel> cartProductData = [];
   List<ProductModel> favProductData = [];
   List<ProductModel> totalProductData = [];
   String? selectedSize;
   int sizeIsSelected = -1;
   bool isLoading = false;
+  ScrollController cartScrollContoller = ScrollController();
+  bool cartIsScrolling = true;
 
   // instances
   final firebaseUserService = FirebaseUserDetails();
@@ -36,6 +40,16 @@ class UserDetailsViewModel extends ChangeNotifier {
 
   void changeLoading() {
     isLoading = !isLoading;
+    notifyListeners();
+  }
+
+  void cartScrollDown() {
+    cartIsScrolling = false;
+    notifyListeners();
+  }
+
+  void cartScrollUp() {
+    cartIsScrolling = true;
     notifyListeners();
   }
 
@@ -111,6 +125,7 @@ class UserDetailsViewModel extends ChangeNotifier {
     await firebaseUserService.updateUserCart(userCart, userData!.id);
     selectedSize = null;
     await fetchingUserData();
+    if (userCart.length <= 4) cartIsScrolling = true;
     if (context.mounted) {
       Navigator.pop(context);
     }
@@ -136,16 +151,22 @@ class UserDetailsViewModel extends ChangeNotifier {
 
   void cartTotalPrice() {
     totalProductPrice = 0;
-
+    discountPrice = 0;
+    totalProductPriceWithoutDiscount = 0;
     for (var product in cartProductData) {
       for (var cartProduct in userCart) {
         if (product.id == cartProduct['id']) {
           final productCount = cartProduct['count'] as int;
+          double productPrice = double.parse(product.productPrice);
+          discountPrice +=
+              productCount * ((product.productDiscount / 100) * productPrice);
 
+          totalProductPriceWithoutDiscount += (productPrice * productCount);
           totalProductPrice += (product.productDiscountedprice * productCount);
         }
       }
     }
+    // totalProductPrice = totalProductPriceWithoutDiscount - discountPrice;
   }
 
   Future<void> updateCartCount({
@@ -208,5 +229,11 @@ class UserDetailsViewModel extends ChangeNotifier {
     usersList = await firebaseUserService.getAllUsers();
     changeLoading();
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    cartScrollContoller.dispose();
+    super.dispose();
   }
 }

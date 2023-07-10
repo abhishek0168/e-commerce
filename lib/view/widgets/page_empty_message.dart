@@ -15,7 +15,6 @@ class PageEmptyMessage extends StatelessWidget {
         children: [
           Image.asset(
             'assets/images/icons8-empty-cart.gif',
-            scale: 0.5,
           ),
           height20,
           const Text('This page is empty !'),

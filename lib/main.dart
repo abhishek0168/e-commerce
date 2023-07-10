@@ -18,7 +18,7 @@ void main() async {
     return Container(
       alignment: Alignment.center,
       child: Text(
-        'Error /n${details.summary}',
+        'Error\n${details.summary}',
         style: const TextStyle(
           color: Colors.orangeAccent,
           fontWeight: FontWeight.bold,

@@ -9,7 +9,9 @@ import 'package:ecommerce_app/view/widgets/text_styles.dart';
 import 'package:ecommerce_app/view_model/promo_code_viewmodel.dart';
 
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 class CartPage extends StatelessWidget {
@@ -19,6 +21,17 @@ class CartPage extends StatelessWidget {
     final userDetailsController = Provider.of<UserDetailsViewModel>(context);
     final promoCodeController = Provider.of<PromoCodeViewModel>(context);
     final screenSize = MediaQuery.sizeOf(context);
+
+    userDetailsController.cartScrollContoller.addListener(() {
+      if (userDetailsController
+              .cartScrollContoller.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        userDetailsController.cartScrollDown();
+      } else {
+        userDetailsController.cartScrollUp();
+      }
+    });
+
     // userDetailsController.fetchingUserData();
     if (userDetailsController.userCart.isNotEmpty) {
       return Padding(
@@ -28,154 +41,243 @@ class CartPage extends StatelessWidget {
             Expanded(
               child: Consumer<UserDetailsViewModel>(
                 builder: (context, value, child) {
-                  return ListView.separated(
-                    shrinkWrap: true,
-                    physics: const ClampingScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return ProductCartWidget(
-                          productData: value.cartProductData[index],
-                          screenSize: screenSize);
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      value.cartScrollUp();
                     },
-                    separatorBuilder: (context, index) => const Divider(),
-                    itemCount: value.cartProductData.length,
+                    child: ListView.separated(
+                      dragStartBehavior: DragStartBehavior.down,
+                      controller: userDetailsController.cartScrollContoller,
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return ProductCartWidget(
+                            productData: value.cartProductData[index],
+                            screenSize: screenSize);
+                      },
+                      separatorBuilder: (context, index) => const Divider(),
+                      itemCount: value.cartProductData.length,
+                    ),
                   );
                 },
               ),
             ),
-            height10,
-            TextFormField(
-              controller: promoCodeController.promoCodeKeyController,
-              maxLines: 1,
-              onTap: () {
-                showModalBottomSheet(
-                  isScrollControlled: true,
-                  context: context,
-                  builder: (context) {
-                    return Container(
-                      height: (70 / 100) * screenSize.height,
-                      padding: const EdgeInsets.all(10),
-                      decoration: const BoxDecoration(),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Container(
-                              height: 5,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                color: AppColors.grayColor,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                          PromoCodeField(
-                            controller:
-                                promoCodeController.promoCodeKeyController,
-                          ),
-                          height20,
-                          // height20,
-                          promoCodeController.promoCodes.isNotEmpty
-                              ? Consumer<PromoCodeViewModel>(
-                                  builder: (context, value, child) => Expanded(
-                                    child: ListView.separated(
-                                      itemBuilder: (context, index) => InkWell(
-                                        onTap: () {
-                                          value.promoCodeToTextField(value
-                                              .promoCodes[index].promoCode);
-                                          Navigator.pop(context);
-                                        },
-                                        child: PromoCodeWidget(
-                                          screenSize: screenSize,
-                                          promoCode:
-                                              value.promoCodes[index].promoCode,
-                                          expiryDate: value
-                                              .promoCodes[index].expiryDate,
-                                          discount:
-                                              value.promoCodes[index].discount,
-                                        ),
+            Consumer<UserDetailsViewModel>(
+              builder: (context, value, child) => Visibility(
+                visible: value.cartIsScrolling,
+                // maintainAnimation: true,
+                child: Column(
+                  children: [
+                    height10,
+                    TextFormField(
+                      controller: promoCodeController.promoCodeKeyController,
+                      maxLines: 1,
+                      onTap: () {
+                        showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (context) {
+                            return Container(
+                              height: (70 / 100) * screenSize.height,
+                              padding: const EdgeInsets.all(10),
+                              decoration: const BoxDecoration(),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Container(
+                                      height: 5,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.grayColor,
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
-                                      separatorBuilder: (context, index) =>
-                                          height20,
-                                      itemCount: value.promoCodes.length,
                                     ),
                                   ),
-                                )
-                              : Center(
-                                  child: SizedBox(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/images/empty-box.gif',
-                                          width: 200,
+                                  PromoCodeField(
+                                    controller: promoCodeController
+                                        .promoCodeKeyController,
+                                  ),
+                                  height20,
+                                  // height20,
+                                  promoCodeController.promoCodes.isNotEmpty
+                                      ? Consumer<PromoCodeViewModel>(
+                                          builder: (context, value, child) =>
+                                              Expanded(
+                                            child: ListView.separated(
+                                              itemBuilder: (context, index) =>
+                                                  InkWell(
+                                                onTap: () {
+                                                  value.promoCodeToTextField(
+                                                      value.promoCodes[index]
+                                                          .promoCode);
+                                                  Navigator.pop(context);
+                                                },
+                                                child: PromoCodeWidget(
+                                                  screenSize: screenSize,
+                                                  promoCode: value
+                                                      .promoCodes[index]
+                                                      .promoCode,
+                                                  expiryDate: value
+                                                      .promoCodes[index]
+                                                      .expiryDate,
+                                                  discount: value
+                                                      .promoCodes[index]
+                                                      .discount,
+                                                ),
+                                              ),
+                                              separatorBuilder:
+                                                  (context, index) => height20,
+                                              itemCount:
+                                                  value.promoCodes.length,
+                                            ),
+                                          ),
+                                        )
+                                      : Center(
+                                          child: SizedBox(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Image.asset(
+                                                  'assets/images/empty-box.gif',
+                                                  width: 200,
+                                                ),
+                                                const Text(
+                                                    'Promo codes are not available'),
+                                              ],
+                                            ),
+                                          ),
                                         ),
-                                        const Text(
-                                            'Promo codes are not available'),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-              decoration: InputDecoration(
-                hintText: 'Enter your promo code',
-                hintStyle: TextStyle(color: AppColors.grayColor),
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
-                ),
-                contentPadding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                suffixIcon: IconButton.filled(
-                  style: const ButtonStyle(
-                      backgroundColor:
-                          MaterialStatePropertyAll(AppColors.blackColor)),
-                  onPressed: () {
-                    String message = promoCodeController.checkPromoCode(
-                        promoCodeController.promoCodeKeyController.text.trim(),
-                        userDetailsController.userData!.id);
-                    final snackBar = CustomeSnackBar().snackBar1(
-                        bgColor: AppColors.starColor, content: message);
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Enter your promo code',
+                        hintStyle: TextStyle(color: AppColors.grayColor),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                        ),
+                        contentPadding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                        suffixIcon: IconButton.filled(
+                          style: const ButtonStyle(
+                              backgroundColor: MaterialStatePropertyAll(
+                                  AppColors.blackColor)),
+                          onPressed: () {
+                            String message = promoCodeController.checkPromoCode(
+                                promoCodeController.promoCodeKeyController.text
+                                    .trim(),
+                                userDetailsController.userData!.id);
+                            final snackBar = CustomeSnackBar().snackBar1(
+                                bgColor: AppColors.starColor, content: message);
 
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  },
-                  icon: const Icon(
-                    Icons.arrow_forward,
-                    color: AppColors.whiteColor,
-                  ),
-                  iconSize: 30,
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          },
+                          icon: const Icon(
+                            Icons.arrow_forward,
+                            color: AppColors.whiteColor,
+                          ),
+                          iconSize: 30,
+                        ),
+                      ),
+                    ),
+                    height20,
+                    FilledButton(
+                      onPressed: () {},
+                      style: ButtonStyle(
+                        minimumSize: MaterialStateProperty.all(
+                          Size(screenSize.width, 50),
+                        ),
+                      ),
+                      child: const Text('Buy Now'),
+                    ),
+                    height10,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Total amount : ',
+                          style: TextStyle(
+                            color: AppColors.grayColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          '₹${userDetailsController.totalProductPriceWithoutDiscount.toStringAsFixed(1)}',
+                          style: CustomeTextStyle.productName
+                              .copyWith(fontSize: 16),
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Total discount : ',
+                          style: TextStyle(
+                            color: AppColors.grayColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          "₹${userDetailsController.discountPrice.toStringAsFixed(2)}",
+                          style: CustomeTextStyle.productName.copyWith(
+                              fontSize: 16, color: AppColors.grayColor),
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Delivery charge : ',
+                          style: CustomeTextStyle.productName
+                              .copyWith(color: AppColors.grayColor),
+                        ),
+                        const Spacer(),
+                        Text(
+                          '₹50',
+                          style: userDetailsController.totalProductPrice < 2000
+                              ? CustomeTextStyle.productName
+                              : CustomeTextStyle.productName.copyWith(
+                                  color: AppColors.grayColor,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                        ),
+                        if (userDetailsController.totalProductPrice > 2000)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 15),
+                            child:
+                                Text('₹0', style: CustomeTextStyle.productName),
+                          ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
-            height20,
-            FilledButton(
-              onPressed: () {},
-              style: ButtonStyle(
-                minimumSize: MaterialStateProperty.all(
-                  Size(screenSize.width, 50),
-                ),
-              ),
-              child: const Text('Buy Now'),
-            ),
-            height10,
             const Divider(),
-            height10,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Total amount : ',
+                  'To pay : ',
                   style: CustomeTextStyle.productName
                       .copyWith(color: AppColors.grayColor),
                 ),
                 Text(
-                  '₹${userDetailsController.totalProductPrice}',
+                  userDetailsController.totalProductPrice < 2000
+                      ? '₹${userDetailsController.totalProductPrice + 50}'
+                      : '₹${userDetailsController.totalProductPrice}',
                   style: CustomeTextStyle.productName,
                 )
               ],
