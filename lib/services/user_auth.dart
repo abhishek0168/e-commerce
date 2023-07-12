@@ -105,9 +105,16 @@ class UserAuthFirebase {
   }
 
   Future<void> sendVerificationMail() async {
+    final user = FirebaseAuth.instance.currentUser;
+    await user!.sendEmailVerification();
+  }
+
+  Future<String?> resetUserPassword({required String email}) async {
     try {
-      final user = FirebaseAuth.instance.currentUser;
-      await user!.sendEmailVerification();
-    } catch (e) {}
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      return 'mail-send';
+    } on FirebaseAuthException catch (e) {
+      return e.message;
+    }
   }
 }

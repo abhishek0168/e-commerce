@@ -18,7 +18,15 @@ class ProductViewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    // final userDetailsViewModel = Provider.of<UserDetailsViewModel>(context);
+    final userDetailsViewModel = Provider.of<UserDetailsViewModel>(context);
+    final isProductPresent = userDetailsViewModel.userCart
+        .any((element) => element['id'] == productDetails.id);
+    if (isProductPresent) {
+      final product = userDetailsViewModel.userCart
+          .where((element) => element['id'] == productDetails.id)
+          .single;
+      userDetailsViewModel.selectedSize = product['size'];
+    }
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {

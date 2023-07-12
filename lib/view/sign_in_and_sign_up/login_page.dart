@@ -60,7 +60,7 @@ class LogInPage extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const ResetPassword(),
+                                builder: (context) => ResetPassword(),
                               ),
                             );
                           },
@@ -156,5 +156,3 @@ class LogInPage extends StatelessWidget {
     );
   }
 }
-
-

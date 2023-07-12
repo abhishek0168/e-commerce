@@ -1,7 +1,9 @@
 import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/cart/product_cart_widget.dart';
 import 'package:ecommerce_app/view/cart/promo_code_field.dart';
+import 'package:ecommerce_app/view/product_checkout_page/product_checkout_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
+import 'package:ecommerce_app/view/widgets/custom_submit_button.dart';
 import 'package:ecommerce_app/view/widgets/custome_snackbar.dart';
 import 'package:ecommerce_app/view/widgets/page_empty_message.dart';
 import 'package:ecommerce_app/view/widgets/promo_code_widget.dart';
@@ -170,33 +172,46 @@ class CartPage extends StatelessWidget {
                               backgroundColor: MaterialStatePropertyAll(
                                   AppColors.blackColor)),
                           onPressed: () {
-                            String message = promoCodeController.checkPromoCode(
-                                promoCodeController.promoCodeKeyController.text
-                                    .trim(),
-                                userDetailsController.userData!.id);
+                            String message = '';
+                            if (userDetailsController.isPromoCodeUsed) {
+                              promoCodeController.promoCodeKeyController
+                                  .clear();
+                              userDetailsController.removePromoCode();
+                              message = 'Promo code removed';
+                            } else {
+                              message = userDetailsController.checkPromoCode(
+                                  promoCodeController
+                                      .promoCodeKeyController.text
+                                      .trim(),
+                                  userDetailsController.userData!.id,
+                                  promoCodeController.promoCodes);
+                            }
                             final snackBar = CustomeSnackBar().snackBar1(
                                 bgColor: AppColors.starColor, content: message);
 
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackBar);
                           },
-                          icon: const Icon(
-                            Icons.arrow_forward,
-                            color: AppColors.whiteColor,
-                          ),
+                          icon: userDetailsController.isPromoCodeUsed
+                              ? const Icon(
+                                  Icons.clear,
+                                  color: AppColors.whiteColor,
+                                )
+                              : const Icon(
+                                  Icons.arrow_forward,
+                                  color: AppColors.whiteColor,
+                                ),
                           iconSize: 30,
                         ),
                       ),
                     ),
                     height20,
-                    FilledButton(
-                      onPressed: () {},
-                      style: ButtonStyle(
-                        minimumSize: MaterialStateProperty.all(
-                          Size(screenSize.width, 50),
-                        ),
-                      ),
-                      child: const Text('Buy Now'),
+                    CustomSubmitButton(
+                      screenSize: screenSize,
+                      onPress: () {
+                        Navigator.of(context).push(_createRoute());
+                      },
+                      title: 'check out',
                     ),
                     height10,
                     Row(
@@ -261,6 +276,20 @@ class CartPage extends StatelessWidget {
                           ),
                       ],
                     ),
+                    if (userDetailsController.isPromoCodeUsed)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Promo code discount : ',
+                            style: CustomeTextStyle.productName
+                                .copyWith(color: AppColors.grayColor),
+                          ),
+                          const Spacer(),
+                          Text('${userDetailsController.promoCodeDiscount}',
+                              style: CustomeTextStyle.productName),
+                        ],
+                      ),
                   ],
                 ),
               ),
@@ -274,11 +303,13 @@ class CartPage extends StatelessWidget {
                   style: CustomeTextStyle.productName
                       .copyWith(color: AppColors.grayColor),
                 ),
-                Text(
-                  userDetailsController.totalProductPrice < 2000
-                      ? '₹${userDetailsController.totalProductPrice + 50}'
-                      : '₹${userDetailsController.totalProductPrice}',
-                  style: CustomeTextStyle.productName,
+                Consumer<UserDetailsViewModel>(
+                  builder: (context, value, child) => Text(
+                    value.totalProductPrice < 2000
+                        ? '₹${value.totalProductPrice + 50}'
+                        : '₹${value.totalProductPrice}',
+                    style: CustomeTextStyle.productName,
+                  ),
                 )
               ],
             ),
@@ -289,4 +320,23 @@ class CartPage extends StatelessWidget {
       return const PageEmptyMessage();
     }
   }
+}
+
+Route _createRoute() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        const ProductCheckOutPage(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(1.0, 0.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
 }

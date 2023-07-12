@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ecommerce_app/model/user_model/user_model.dart';
 import 'package:ecommerce_app/services/user_auth.dart';
+import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,7 @@ class SignInPageViewModel extends ChangeNotifier {
 
   // password reset page
   final resetPasswordController = TextEditingController();
-
+  bool enableButton = false;
   bool displayPassword = true;
 
   // Auth page
@@ -26,6 +27,7 @@ class SignInPageViewModel extends ChangeNotifier {
 
   // instances
   final userDetailsModel = UserDetailsViewModel();
+  final firebseUserAuth = UserAuthFirebase();
 
   void toggle() {
     isLogin = !isLogin;
@@ -64,8 +66,6 @@ class SignInPageViewModel extends ChangeNotifier {
       }
     }
   }
-
-  final firebseUserAuth = UserAuthFirebase();
 
   Future<String?> signInPageAuth({
     required String email,
@@ -116,6 +116,25 @@ class SignInPageViewModel extends ChangeNotifier {
   Future<bool> verifyEmail() async {
     bool status = await firebseUserAuth.emailVerification();
     return status;
+  }
+
+  void isRestPasswordEnable() {
+    if (resetPasswordController.text.trim().isNotEmpty) {
+      enableButton = true;
+    } else {
+      enableButton = false;
+    }
+    notifyListeners();
+  }
+
+  Future<String?> resetPassword(String email, BuildContext context) async {
+    String? message;
+    loadingIdicator(context);
+    message = await firebseUserAuth.resetUserPassword(email: email);
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
+    return message;
   }
 
   @override

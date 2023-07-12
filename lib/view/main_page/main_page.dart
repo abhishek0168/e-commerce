@@ -2,6 +2,7 @@ import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/cart/cart_page.dart';
 import 'package:ecommerce_app/view/favorite_page/favorite_page.dart';
 import 'package:ecommerce_app/view/home/home_page.dart';
+import 'package:ecommerce_app/view/profile_page/profile_page.dart';
 import 'package:ecommerce_app/view/shop/shop_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view_model/main_page_view_model.dart';
@@ -18,31 +19,18 @@ class MainPage extends StatelessWidget {
     ShopPage(),
     const CartPage(),
     const FavoritePage(),
-    const Placeholder(color: Colors.red),
+    const ProfilePage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     final mainPageviewModel = context.watch<MainPageViewModel>();
-    final signInpageViewModel = Provider.of<SignInPageViewModel>(context);
     final userDetailsController = Provider.of<UserDetailsViewModel>(context);
     // userDetailsController.fetchingUserData();
 
     return SafeArea(
       child: Scaffold(
-        appBar: mainPageviewModel.currentIndex == 0
-            ? null
-            : AppBar(
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      signInpageViewModel.signOutUser();
-                      mainPageviewModel.changeIndex(0);
-                    },
-                    icon: const Icon(Icons.logout),
-                  ),
-                ],
-              ),
+        appBar: mainPageviewModel.currentIndex == 0 ? null : AppBar(),
         body: screens[mainPageviewModel.currentIndex],
         bottomNavigationBar: NavigationBarTheme(
           data: const NavigationBarThemeData(

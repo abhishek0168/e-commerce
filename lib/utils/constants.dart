@@ -1,4 +1,6 @@
 
+import 'package:ecommerce_app/view/theme/app_color_theme.dart';
+import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
 import 'package:flutter/material.dart';
 
 /* sized box */
@@ -17,4 +19,14 @@ const bag = 'Bag';
 /* padding */
 const paddingVertical10 = EdgeInsets.symmetric(vertical: 10);
 
+
+/* loading idicator */
+  Future<dynamic> loadingIdicator(BuildContext context) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => threeDotLoadingAnimation(),
+      barrierColor: AppColors.whiteColor.withOpacity(0.5),
+    );
+  }
 

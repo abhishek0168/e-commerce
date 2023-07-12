@@ -5,6 +5,7 @@ class CustomeSnackBar {
   SnackBar snackBar1(
       {required Color bgColor, required String content, Color? textColor}) {
     return SnackBar(
+      duration: const Duration(seconds: 2),
       backgroundColor: bgColor,
       content: Text(
         content,

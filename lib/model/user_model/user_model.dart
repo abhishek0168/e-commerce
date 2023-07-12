@@ -52,19 +52,36 @@ class UserAddress {
   final String name;
   final String mobileNumber;
   final String houseName;
+  final String city;
   final String state;
   final String district;
   final String country;
   final String pincode;
+  final bool status;
 
   UserAddress({
     required this.id,
     required this.name,
     required this.mobileNumber,
+    required this.city,
     required this.houseName,
     required this.state,
     required this.district,
     required this.country,
     required this.pincode,
+    required this.status,
   });
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'mobileNumber': mobileNumber,
+        'city': city,
+        'houseName': houseName,
+        'state': state,
+        'district': district,
+        'country': country,
+        'pincode': pincode,
+        'status': false,
+      };
 }

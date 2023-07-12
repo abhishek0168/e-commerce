@@ -23,4 +23,9 @@ class CustomeTextStyle {
     fontSize: 20,
     fontWeight: FontWeight.bold,
   );
+  static final boldName = GoogleFonts.alata(
+    color: AppColors.blackColor,
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+  );
 }

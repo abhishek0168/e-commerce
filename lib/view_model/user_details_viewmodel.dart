@@ -1,12 +1,12 @@
 import 'dart:developer';
 
 import 'package:ecommerce_app/model/product_model/product_model.dart';
+import 'package:ecommerce_app/model/promo_code_model/promo_code_model.dart';
 import 'package:ecommerce_app/model/user_model/user_model.dart';
 import 'package:ecommerce_app/services/firebase_services.dart';
 import 'package:ecommerce_app/services/firebase_user_services.dart';
 import 'package:ecommerce_app/services/user_auth.dart';
-import 'package:ecommerce_app/view/theme/app_color_theme.dart';
-import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
+import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +26,9 @@ class UserDetailsViewModel extends ChangeNotifier {
   bool isLoading = false;
   ScrollController cartScrollContoller = ScrollController();
   bool cartIsScrolling = true;
+  bool isPromoCodeUsed = false;
+  String usedPromoCode = '';
+  int promoCodeDiscount = 0;
 
   // instances
   final firebaseUserService = FirebaseUserDetails();
@@ -100,12 +103,7 @@ class UserDetailsViewModel extends ChangeNotifier {
     required int count,
     required BuildContext context,
   }) async {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => threeDotLoadingAnimation(),
-      barrierColor: AppColors.whiteColor.withOpacity(0.5),
-    );
+    loadingIdicator(context);
     userData = await firebaseUserService.getUserDetails();
 
     bool productStatus = userCart.any((element) => element['id'] == productId);
@@ -129,6 +127,7 @@ class UserDetailsViewModel extends ChangeNotifier {
     if (context.mounted) {
       Navigator.pop(context);
     }
+
     notifyListeners();
   }
 
@@ -166,7 +165,6 @@ class UserDetailsViewModel extends ChangeNotifier {
         }
       }
     }
-    // totalProductPrice = totalProductPriceWithoutDiscount - discountPrice;
   }
 
   Future<void> updateCartCount({
@@ -174,12 +172,7 @@ class UserDetailsViewModel extends ChangeNotifier {
     required Map<dynamic, dynamic> prodcutDetails,
     required BuildContext context,
   }) async {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => threeDotLoadingAnimation(),
-      barrierColor: AppColors.whiteColor.withOpacity(0.5),
-    );
+    loadingIdicator(context);
     userCart.remove(prodcutDetails);
     final data = {
       'id': prodcutDetails['id'],
@@ -204,6 +197,7 @@ class UserDetailsViewModel extends ChangeNotifier {
   }
 
   void addtoFav(String productId, BuildContext context) async {
+    loadingIdicator(context);
     if (userFavs.contains(productId)) {
       userFavs.remove(productId);
     } else {
@@ -213,6 +207,9 @@ class UserDetailsViewModel extends ChangeNotifier {
 
     await firebaseUserService.updateUserFav(userFavs, userData!.id);
     await fetchingUserData();
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
     notifyListeners();
   }
 
@@ -228,6 +225,41 @@ class UserDetailsViewModel extends ChangeNotifier {
 
     usersList = await firebaseUserService.getAllUsers();
     changeLoading();
+    notifyListeners();
+  }
+
+  String checkPromoCode(
+      String promoCode, String userId, List<PromoCodeModel> promoCodeList) {
+    bool isPresent =
+        promoCodeList.any((element) => element.promoCode == promoCode);
+    if (isPresent) {
+      PromoCodeModel promoModel = promoCodeList
+          .where((element) => element.promoCode == promoCode)
+          .single;
+      if (!promoModel.usedUsers.contains(userId) &&
+          usedPromoCode != promoCode) {
+        cartTotalPrice();
+        usedPromoCode = promoCode;
+        isPromoCodeUsed = true;
+        log(totalProductPrice.toString());
+        promoCodeDiscount =
+            ((promoModel.discount / 100) * totalProductPrice).toInt();
+        totalProductPrice -= promoCodeDiscount;
+        notifyListeners();
+        return 'Promo code added successfully';
+      } else {
+        return 'This promo code alredy used';
+      }
+    } else {
+      return 'This promo code does not exist';
+    }
+  }
+
+  removePromoCode() {
+    cartTotalPrice();
+    isPromoCodeUsed = false;
+    usedPromoCode = '';
+    promoCodeDiscount = 0;
     notifyListeners();
   }
 

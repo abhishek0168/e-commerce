@@ -37,6 +37,18 @@ class FirebaseUserDetails {
     return null;
   }
 
+  Future<void> updateUserAddress(
+      List<Map<dynamic, dynamic>> userAddressList, String userId) async {
+    log('$userId userID updateUserCart()=>');
+    final docUser = _db.collection('Users').doc(userId);
+    Map<String, dynamic> updateJson = {
+      'userAddress': userAddressList,
+    };
+    await docUser.update(updateJson).then((value) {
+      log('user address updated');
+    });
+  }
+
   Future<void> updateUserCart(
     List<Map<dynamic, dynamic>> productList,
     String userId,

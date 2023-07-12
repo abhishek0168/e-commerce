@@ -1,5 +1,6 @@
 import 'package:ecommerce_app/model/promo_code_model/promo_code_model.dart';
 import 'package:ecommerce_app/services/firebase_services.dart';
+import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -20,6 +21,7 @@ class PromoCodeViewModel extends ChangeNotifier {
 
   // instances
   final productServices = FirebaseProductServices();
+  final userDetailsModel = UserDetailsViewModel();
 
   void init() async {
     promoCodes = await productServices.getPromoCodes();
@@ -54,22 +56,7 @@ class PromoCodeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String checkPromoCode(String promoCode, String userId) {
-    bool isPresent =
-        promoCodes.any((element) => element.promoCode == promoCode);
-
-    if (isPresent) {
-      PromoCodeModel promoModel =
-          promoCodes.where((element) => element.promoCode == promoCode).single;
-      if (promoModel.usedUsers.contains(userId)) {
-        return 'This promo code alredy used';
-      } else {
-        return 'Promo code added successfully';
-      }
-    } else {
-      return 'This promo code does not exist';
-    }
-  }
+  
 
   void clearForm() {
     createdDateController.clear();

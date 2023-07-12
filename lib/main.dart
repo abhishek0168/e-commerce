@@ -6,6 +6,7 @@ import 'package:ecommerce_app/view_model/main_page_view_model.dart';
 import 'package:ecommerce_app/view_model/promo_code_viewmodel.dart';
 import 'package:ecommerce_app/view_model/shop_view_model.dart';
 import 'package:ecommerce_app/view_model/sign_in_page_viewmodel.dart';
+import 'package:ecommerce_app/view_model/user_address_viewmodel.dart';
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AdminPageViewModel()),
         ChangeNotifierProvider(create: (_) => PromoCodeViewModel()..init()),
         ChangeNotifierProvider(create: (_) => SignInPageViewModel()),
+        ChangeNotifierProvider(create: (_) => AddressViewModel()..init()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
