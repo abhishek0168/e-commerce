@@ -31,11 +31,11 @@ class UsersDisplay extends StatelessWidget {
                           ),
                         );
                       },
-                      leading: SizedBox(
-                        width: 50,
-                        child: SvgPicture.asset(
-                            'assets/svgs/user-image-with-black-background-svgrepo-com.svg'),
-                      ),
+                      // leading: SizedBox(
+                      //   width: 50,
+                      //   child: SvgPicture.asset(
+                      //       'assets/svgs/user-image-with-black-background-svgrepo-com.svg'),
+                      // ),
                       title: Text(usersList[index].userName),
                       subtitle: Text(usersList[index].userEmail),
                       trailing: usersList[index].userStatus

@@ -29,11 +29,12 @@ class SelectUserAddress extends StatelessWidget {
               return ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 itemBuilder: (context, index) => AddressShowWidget(
-                    isUpdate: true,
-                    data: addressList[index],
-                    navigateTo: AddUserAddress(
-                      addressId: addressList[index].id,
-                    )),
+                  isUpdate: true,
+                  data: addressList[index],
+                  navigateTo: AddUserAddress(
+                    addressId: addressList[index].id,
+                  ),
+                ),
                 separatorBuilder: (context, index) => height10,
                 itemCount: addressList!.length,
               );

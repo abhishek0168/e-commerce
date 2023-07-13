@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:ecommerce_app/model/user_model/user_model.dart';
 import 'package:ecommerce_app/services/user_auth.dart';
 import 'package:ecommerce_app/utils/constants.dart';
+import 'package:ecommerce_app/view_model/user_address_viewmodel.dart';
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +29,7 @@ class SignInPageViewModel extends ChangeNotifier {
   // instances
   final userDetailsModel = UserDetailsViewModel();
   final firebseUserAuth = UserAuthFirebase();
+  final addressViewModel = AddressViewModel();
 
   void toggle() {
     isLogin = !isLogin;
@@ -76,7 +78,8 @@ class SignInPageViewModel extends ChangeNotifier {
       email: email,
       password: password,
     );
-    userDetailsModel.fetchingUserData();
+    await userDetailsModel.fetchingUserData();
+    await addressViewModel.getUserAddress();
     notifyListeners();
     return message;
   }
@@ -88,13 +91,14 @@ class SignInPageViewModel extends ChangeNotifier {
   }) async {
     String? message =
         await firebseUserAuth.createUser(email: email, password: password);
-    userDetailsModel.fetchingUserData();
+    await userDetailsModel.fetchingUserData();
+    await addressViewModel.getUserAddress();
+
     return message;
   }
 
   Future<void> signOutUser() async {
     await firebseUserAuth.signOut();
-    userDetailsModel.fetchingUserData();
   }
 
   Future<void> createUser() async {

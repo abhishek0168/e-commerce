@@ -22,10 +22,10 @@ class UserDetails extends StatelessWidget {
           ListView(
             shrinkWrap: true,
             children: [
-              SvgPicture.asset(
-                'assets/svgs/user-image-with-black-background-svgrepo-com.svg',
-                width: 190,
-              ),
+              // SvgPicture.asset(
+              //   'assets/svgs/user-image-with-black-background-svgrepo-com.svg',
+              //   width: 190,
+              // ),
               DataTable(
                 columns: const [
                   DataColumn(
@@ -104,16 +104,6 @@ class UserDetails extends StatelessWidget {
                               : const Text('Unblock'),
                         ),
                       ),
-                    ],
-                  ),
-                  DataRow(
-                    cells: [
-                      const DataCell(Text('Address')),
-                      DataCell(Container(
-                        width: 30,
-                        height: 30,
-                        color: AppColors.starColor,
-                      )),
                     ],
                   ),
                 ],

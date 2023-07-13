@@ -2,7 +2,6 @@ import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/profile_page/profile_listtile_widget.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view/user_address_adding_%20page/select_user_address.dart';
-import 'package:ecommerce_app/view/user_details_user_side/user_edit_page.dart';
 import 'package:ecommerce_app/view/widgets/heading_widget.dart';
 import 'package:ecommerce_app/view/widgets/text_styles.dart';
 import 'package:ecommerce_app/view_model/main_page_view_model.dart';
@@ -10,7 +9,6 @@ import 'package:ecommerce_app/view_model/sign_in_page_viewmodel.dart';
 import 'package:ecommerce_app/view_model/user_address_viewmodel.dart';
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -34,12 +32,10 @@ class ProfilePage extends StatelessWidget {
           ),
           height20,
           ListTile(
-            dense: true,
-            contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
-            leading: SvgPicture.asset(
-              'assets/svgs/user-image-with-black-background-svgrepo-com.svg',
-              width: 60,
-            ),
+            // leading: SvgPicture.asset(
+            //   'assets/svgs/user-image-with-black-background-svgrepo-com.svg',
+            //   width: 60,
+            // ),
             title: H2(text: userDetailsController.userData!.userName),
             subtitle: Text(userDetailsController.userData!.userEmail),
           ),

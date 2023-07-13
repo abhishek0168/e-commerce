@@ -86,6 +86,8 @@ class ResetPassword extends StatelessWidget {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(snackBar);
                             }
+                            value.resetPasswordController.clear();
+
                             if (context.mounted) {
                               Navigator.pop(context);
                             }

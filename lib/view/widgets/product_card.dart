@@ -49,19 +49,19 @@ class ProductCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Row(
-                    children: List.generate(
-                      5,
-                      (index) => Icon(
-                        Icons.star,
-                        color: AppColors.starColor,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 8),
+                //   child: Row(
+                //     children: List.generate(
+                //       5,
+                //       (index) => Icon(
+                //         Icons.star,
+                //         color: AppColors.starColor,
+                //         size: 20,
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 H2(text: productModel.brandName),
                 SizedBox(
                   height: 35,
