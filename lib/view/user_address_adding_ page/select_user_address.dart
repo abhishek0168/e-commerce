@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view/user_address_adding_%20page/add_user_address.dart';
@@ -25,7 +23,7 @@ class SelectUserAddress extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data!.isNotEmpty) {
-              final addressList = snapshot.data;
+              final addressList = snapshot.data!;
               return ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 itemBuilder: (context, index) => AddressShowWidget(
@@ -36,11 +34,11 @@ class SelectUserAddress extends StatelessWidget {
                   ),
                 ),
                 separatorBuilder: (context, index) => height10,
-                itemCount: addressList!.length,
+                itemCount: addressList.length,
               );
             } else {
               return const Center(
-                child: Text('empty'),
+                child: Text('Address not added'),
               );
             }
           } else if (snapshot.hasError) {

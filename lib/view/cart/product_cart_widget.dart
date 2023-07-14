@@ -144,11 +144,13 @@ class ProductCartWidget extends StatelessWidget {
                             onPressed: () {
                               int sizeCount = productData
                                   .productSizes[prodcutDetails['size']];
-                              if (counter.value < sizeCount) counter.value++;
-                              userDetailsController.updateCartCount(
-                                  context: context,
-                                  count: counter.value,
-                                  prodcutDetails: prodcutDetails);
+                              if (counter.value < sizeCount) {
+                                counter.value++;
+                                userDetailsController.updateCartCount(
+                                    context: context,
+                                    count: counter.value,
+                                    prodcutDetails: prodcutDetails);
+                              }
                             },
                             icon: const Icon(Icons.add),
                           ),

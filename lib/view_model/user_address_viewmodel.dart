@@ -25,24 +25,27 @@ class AddressViewModel extends ChangeNotifier {
 
   Future<void> init() async {
     await getUserAddress();
+    notifyListeners();
   }
 
   Future<List<UserAddress>> getUserAddress() async {
     userData = await firebaseUserService.getUserDetails();
     if (userData != null && userData!.userAddress != null) {
       userAddresss = userData!.userAddress!
-          .map((data) => UserAddress(
-                id: data['id'],
-                name: data['name'],
-                mobileNumber: data['mobileNumber'],
-                city: data['city'],
-                houseName: data['houseName'],
-                state: data['state'],
-                district: data['district'],
-                country: data['country'],
-                pincode: data['pincode'],
-                status: data['status'],
-              ))
+          .map(
+            (data) => UserAddress(
+              id: data['id'],
+              name: data['name'],
+              mobileNumber: data['mobileNumber'],
+              city: data['city'],
+              houseName: data['houseName'],
+              state: data['state'],
+              district: data['district'],
+              country: data['country'],
+              pincode: data['pincode'],
+              status: data['status'],
+            ),
+          )
           .toList();
       log('getUserAddress()=> $userAddresss');
     }

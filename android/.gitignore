@@ -11,3 +11,4 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+lib/stripe_key.dart

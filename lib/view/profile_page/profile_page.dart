@@ -17,7 +17,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userDetailsController = Provider.of<UserDetailsViewModel>(context);
-    final userAddressModel = Provider.of<AddressViewModel>(context);
+    // final userAddressModel = Provider.of<AddressViewModel>(context);
     final signInpageViewModel = Provider.of<SignInPageViewModel>(context);
     final mainPageviewModel = context.watch<MainPageViewModel>();
 
@@ -45,22 +45,24 @@ class ProfilePage extends StatelessWidget {
             subtitle: '0 orders',
             onPress: () {},
           ),
-          ProfileListTile(
-            title: 'Shipping addresses',
-            subtitle: userAddressModel.userAddresss.length <= 1
-                ? '${userAddressModel.userAddresss.length} address'
-                : '${userAddressModel.userAddresss.length} addresses',
-            onPress: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const SelectUserAddress(),
-              ));
-            },
+          Consumer<AddressViewModel>(
+            builder: (context, value, child) => ProfileListTile(
+              title: 'Shipping addresses',
+              subtitle: value.userAddresss.length <= 1
+                  ? '${value.userAddresss.length} address'
+                  : '${value.userAddresss.length} addresses',
+              onPress: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const SelectUserAddress(),
+                ));
+              },
+            ),
           ),
-          ProfileListTile(
-            title: 'Payment methods',
-            subtitle: '',
-            onPress: () {},
-          ),
+          // ProfileListTile(
+          //   title: 'Payment methods',
+          //   subtitle: '',
+          //   onPress: () {},
+          // ),
           // ProfileListTile(
           //   title: 'Settings',
           //   subtitle: '',

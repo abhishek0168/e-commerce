@@ -3,7 +3,7 @@ import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class UserDetails extends StatelessWidget {

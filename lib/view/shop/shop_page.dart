@@ -5,25 +5,17 @@ import 'package:ecommerce_app/view/widgets/add_to_favorite.dart';
 import 'package:ecommerce_app/view/widgets/page_empty_message.dart';
 import 'package:ecommerce_app/view/widgets/product_card.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
-import 'package:ecommerce_app/view_model/shop_view_model.dart';
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
 class ShopPage extends StatelessWidget {
-  ShopPage({super.key});
-  final List<String> filterChips = [
-    'T-shirts',
-    'Crop tops',
-    'Midi Dress',
-    'Salwar Kameez',
-    'Lehenga Choli',
-  ];
+  const ShopPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final shopViewModel = context.watch<ShopViewModel>();
+    // final shopViewModel = context.watch<ShopViewModel>();
     final firebaseDataController = Provider.of<DataFromFirebase>(context);
 
     final userDetailsController = Provider.of<UserDetailsViewModel>(context);
@@ -31,31 +23,6 @@ class ShopPage extends StatelessWidget {
       onRefresh: () => firebaseDataController.callPrductDetails(),
       child: Column(
         children: [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: filterChips
-                  .map(
-                    (e) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: FilterChip(
-                        showCheckmark: false,
-                        label: Text(e),
-                        labelStyle: TextStyle(
-                            color: shopViewModel.filter.contains(e)
-                                ? AppColors.whiteColor
-                                : AppColors.blackColor),
-                        selected: shopViewModel.filter.contains(e),
-                        selectedColor: AppColors.blackColor,
-                        onSelected: (value) {
-                          shopViewModel.changeSelection(value, e);
-                        },
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
           Container(
             decoration: BoxDecoration(
               color: AppColors.whiteColor,

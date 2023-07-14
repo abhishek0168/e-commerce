@@ -62,6 +62,7 @@ class ProductCard extends StatelessWidget {
                 //     ),
                 //   ),
                 // ),
+                height10,
                 H2(text: productModel.brandName),
                 SizedBox(
                   height: 35,

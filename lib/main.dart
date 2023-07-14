@@ -1,6 +1,7 @@
 import 'package:ecommerce_app/view/selection_page/selection_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view_model/admin_page_viewmodel.dart';
+import 'package:ecommerce_app/view_model/payment_view_model.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
 import 'package:ecommerce_app/view_model/main_page_view_model.dart';
 import 'package:ecommerce_app/view_model/promo_code_viewmodel.dart';
@@ -9,6 +10,7 @@ import 'package:ecommerce_app/view_model/sign_in_page_viewmodel.dart';
 import 'package:ecommerce_app/view_model/user_address_viewmodel.dart';
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,6 +32,7 @@ void main() async {
     );
   };
   WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey = 'pk_test_51NT5iwSFB6cWaNPUZRnBwMmfGMv78RASH5wScFxqz11NMRpiFQIgchWV2Soz5qfUpvdHFUd9dN9oYA90tWwEipSs00q6H14450';
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -45,14 +48,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => MainPageViewModel()..init()),
         ChangeNotifierProvider(create: (_) => UserDetailsViewModel()..init()),
         ChangeNotifierProvider(create: (_) => DataFromFirebase()..init()),
-        ChangeNotifierProvider(create: (_) => MainPageViewModel()),
         ChangeNotifierProvider(create: (_) => ShopViewModel()),
         ChangeNotifierProvider(create: (_) => AdminPageViewModel()),
         ChangeNotifierProvider(create: (_) => PromoCodeViewModel()..init()),
         ChangeNotifierProvider(create: (_) => SignInPageViewModel()),
         ChangeNotifierProvider(create: (_) => AddressViewModel()..init()),
+        ChangeNotifierProvider(create: (_) => PaymentViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
