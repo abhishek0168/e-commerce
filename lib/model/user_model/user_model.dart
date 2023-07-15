@@ -9,8 +9,10 @@ class UserModel {
   final List<dynamic>? userFavList;
   final List<dynamic>? userCart;
   final List<dynamic>? userAddress;
+  final List<dynamic>? userOrders;
 
   UserModel({
+    this.userOrders,
     required this.id,
     required this.userName,
     required this.userEmail,
@@ -29,6 +31,7 @@ class UserModel {
         'userFavList': [],
         'userCart': [],
         'userAddress': [],
+        'userOrders': [],
         'status': userStatus,
       };
 
@@ -43,6 +46,7 @@ class UserModel {
       userCart: data['userCart'],
       userFavList: data['userFavList'],
       userStatus: data['status'],
+      userOrders: data['userOrders'],
     );
   }
 }

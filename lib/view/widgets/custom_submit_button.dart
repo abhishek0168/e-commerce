@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:flutter/material.dart';
 
 class CustomSubmitButton extends StatelessWidget {
@@ -6,12 +7,13 @@ class CustomSubmitButton extends StatelessWidget {
     required this.screenSize,
     required this.onPress,
     required this.title,
+    this.bgColor,
   });
 
   final Size screenSize;
   final VoidCallback onPress;
   final String title;
-
+  final Color? bgColor;
   @override
   Widget build(BuildContext context) {
     return FilledButton(
@@ -20,6 +22,8 @@ class CustomSubmitButton extends StatelessWidget {
         minimumSize: MaterialStateProperty.all(
           Size(screenSize.width, 50),
         ),
+        backgroundColor:
+            bgColor != null ? MaterialStatePropertyAll(bgColor) : null,
       ),
       child: Text(title.toUpperCase()),
     );

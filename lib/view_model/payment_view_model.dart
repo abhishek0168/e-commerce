@@ -1,17 +1,29 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:ecommerce_app/model/user_model/user_model.dart';
 import 'package:ecommerce_app/stripe_key.dart';
 import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
+import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 
 class PaymentViewModel extends ChangeNotifier {
+  PaymentMethod? selectedMethod;
   Map<String, dynamic>? paymentIntent;
 
-  Future<void> makePayment(BuildContext context, String amount) async {
+  // instances
+  final userdetails = UserDetailsViewModel();
+
+  changePaymentMethod(PaymentMethod option) {
+    selectedMethod = option;
+    notifyListeners();
+  }
+
+  Future<void> makePayment(
+      BuildContext context, String amount, UserAddress selectedAddress) async {
     try {
       loadingIdicator(context);
       paymentIntent = await createPaymentIntent(amount);
@@ -26,7 +38,7 @@ class PaymentViewModel extends ChangeNotifier {
                   merchantDisplayName: 'Abhishek'))
           .then((value) {});
       if (context.mounted) {
-        await displayPaymentSheet(context);
+        await displayPaymentSheet(context, selectedAddress);
       }
     } catch (e, s) {
       log('Makepayment => $e\n$s');
@@ -62,29 +74,35 @@ class PaymentViewModel extends ChangeNotifier {
     return calculatedAmount.toString();
   }
 
-  Future<void> displayPaymentSheet(BuildContext context) async {
+  Future<void> displayPaymentSheet(
+      BuildContext context, UserAddress selectedAddress) async {
     try {
-      await Stripe.instance.presentPaymentSheet().then((value) {
-        showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.check_circle,
-                  color: AppColors.sumbitColor,
-                ),
-                const Text('Payment Successfull'),
-              ],
+      await Stripe.instance.presentPaymentSheet().then(
+        (value) async {
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.check_circle,
+                    color: AppColors.sumbitColor,
+                  ),
+                  const Text('Payment Successfull'),
+                ],
+              ),
             ),
-          ),
-        );
-        
-        paymentIntent = null;
-      }).onError((error, stackTrace) {
-        log('displayPaymentSheet => Error $error\n$stackTrace');
-      });
+          );
+          paymentIntent = null;
+          await userdetails.clearUserCart(selectedAddress);
+          await userdetails.fetchingUserData();
+        },
+      ).onError(
+        (error, stackTrace) {
+          log('displayPaymentSheet => Error $error\n$stackTrace');
+        },
+      );
     } on StripeException catch (e) {
       log('displayPaymentSheet => Error $e');
       showDialog(
@@ -97,4 +115,10 @@ class PaymentViewModel extends ChangeNotifier {
       log('displayPaymentSheet => Error $e');
     }
   }
+}
+
+enum PaymentMethod {
+  cod,
+  card,
+  upi,
 }

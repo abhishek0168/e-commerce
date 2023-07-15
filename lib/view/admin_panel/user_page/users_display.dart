@@ -20,33 +20,39 @@ class UsersDisplay extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final usersList = snapshot.data;
-            return ListView.separated(
-                itemBuilder: (context, index) => ListTile(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                UserDetails(userId: usersList[index].id),
-                          ),
-                        );
-                      },
-                      // leading: SizedBox(
-                      //   width: 50,
-                      //   child: SvgPicture.asset(
-                      //       'assets/svgs/user-image-with-black-background-svgrepo-com.svg'),
-                      // ),
-                      title: Text(usersList[index].userName),
-                      subtitle: Text(usersList[index].userEmail),
-                      trailing: usersList[index].userStatus
-                          ? null
-                          : const Text(
-                              'Blocked',
-                              style: TextStyle(color: AppColors.primaryColor),
+            if (usersList!.isNotEmpty) {
+              return ListView.separated(
+                  itemBuilder: (context, index) => ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  UserDetails(userId: usersList[index].id),
                             ),
-                    ),
-                separatorBuilder: (context, index) => Container(),
-                itemCount: usersList!.length);
+                          );
+                        },
+                        // leading: SizedBox(
+                        //   width: 50,
+                        //   child: SvgPicture.asset(
+                        //       'assets/svgs/user-image-with-black-background-svgrepo-com.svg'),
+                        // ),
+                        title: Text(usersList[index].userName),
+                        subtitle: Text(usersList[index].userEmail),
+                        trailing: usersList[index].userStatus
+                            ? null
+                            : const Text(
+                                'Blocked',
+                                style: TextStyle(color: AppColors.primaryColor),
+                              ),
+                      ),
+                  separatorBuilder: (context, index) => Container(),
+                  itemCount: usersList.length);
+            } else {
+              return const Center(
+                child: Text('No users found :('),
+              );
+            }
           } else if (snapshot.hasError) {
             return Center(
                 child: Text('Somthing went wrong :(\n${snapshot.error}'));

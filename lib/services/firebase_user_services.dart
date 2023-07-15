@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/model/user_model/user_model.dart';
@@ -56,6 +57,7 @@ class FirebaseUserDetails {
     try {
       log('$userId userID updateUserCart()=>');
       final docUser = _db.collection('Users').doc(userId);
+
       Map<String, dynamic> updateJson = {
         'userCart': productList,
       };
@@ -67,7 +69,25 @@ class FirebaseUserDetails {
     }
   }
 
-  updateCartProductCount(int count) async {}
+  Future<void> updateUserOrder(
+    List<Map<dynamic, dynamic>> orderList,
+    String userId,
+  ) async {
+    try {
+      log('$userId userID updateUserCart()=>');
+      final docUser = _db.collection('Users').doc(userId);
+
+      Map<String, dynamic> updateJson = {
+        'userOrders': orderList,
+      };
+      log('Order list $orderList');
+      await docUser.update(updateJson).then((value) {
+        log('Order list updated');
+      });
+    } catch (e) {
+      log('updateUserOrder()=> $e');
+    }
+  }
 
   Future<void> updateUserFav(
     List<String> productList,

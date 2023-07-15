@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_app/model/order_model/order_model.dart';
 import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/model/promo_code_model/promo_code_model.dart';
 import 'package:ecommerce_app/model/user_model/user_model.dart';
@@ -8,7 +10,9 @@ import 'package:ecommerce_app/services/firebase_user_services.dart';
 import 'package:ecommerce_app/services/user_auth.dart';
 import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
+import 'package:ecommerce_app/view_model/user_address_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class UserDetailsViewModel extends ChangeNotifier {
   List<Map<dynamic, dynamic>> userCart = [];
@@ -21,6 +25,7 @@ class UserDetailsViewModel extends ChangeNotifier {
   List<ProductModel> cartProductData = [];
   List<ProductModel> favProductData = [];
   List<ProductModel> totalProductData = [];
+  List<OrderModel> totalOrderList = [];
   String? selectedSize;
   int sizeIsSelected = -1;
   bool isLoading = false;
@@ -35,6 +40,7 @@ class UserDetailsViewModel extends ChangeNotifier {
   final dataFromFirebase = DataFromFirebase();
   final productServices = FirebaseProductServices();
   final userAuth = UserAuthFirebase();
+  // final addressModel = AddressViewModel();
 
   Future<void> init() async {
     totalProductData = await productServices.getProductDetails();
@@ -76,6 +82,16 @@ class UserDetailsViewModel extends ChangeNotifier {
                 'color': e['color'],
                 'size': e['size']
               })
+          .toList();
+
+      totalOrderList = userData!.userOrders!
+          .map((e) => OrderModel(
+                id: e['id'],
+                amount: e['amount'],
+                address: e['address'],
+                cartDetails: e['cartDetails'],
+                date: e['date'],
+              ))
           .toList();
       // final bahu = userData!.userStatus;
       userFavs = userData!.userFavList!.map((e) => e.toString()).toList();
@@ -128,6 +144,35 @@ class UserDetailsViewModel extends ChangeNotifier {
       Navigator.pop(context);
     }
 
+    notifyListeners();
+  }
+
+  Future<void> clearUserCart(UserAddress selectedAddress) async {
+    String date = DateFormat('dd-MM-yyyy').format(DateTime.now());
+    totalOrderList.add(
+      OrderModel(
+        id: 'id',
+        amount: totalProductPrice.toString(),
+        address: selectedAddress.toJson(),
+        cartDetails: userCart,
+        date: date,
+      ),
+    );
+    List<Map<dynamic, dynamic>> orderList = totalOrderList
+        .map((e) => {
+              'id': e.id,
+              'amount': e.amount,
+              'address': e.address,
+              'cartDetails': e.cartDetails,
+              'date': e.date,
+            })
+        .toList();
+    await firebaseUserService.updateUserOrder(orderList, userData!.id);
+    userCart.clear();
+    cartProductData.clear();
+    await firebaseUserService.updateUserCart(userCart, userData!.id);
+    await fetchingUserData();
+    log('cartProductData $cartProductData');
     notifyListeners();
   }
 
@@ -255,7 +300,7 @@ class UserDetailsViewModel extends ChangeNotifier {
     }
   }
 
-  removePromoCode() {
+  void removePromoCode() {
     cartTotalPrice();
     isPromoCodeUsed = false;
     usedPromoCode = '';

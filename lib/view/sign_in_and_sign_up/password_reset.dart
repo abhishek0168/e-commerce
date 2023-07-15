@@ -22,7 +22,7 @@ class ResetPassword extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
-                'Sign up ',
+                'Reset password',
                 style: TextStyle(
                   fontSize: 48,
                 ),

@@ -40,10 +40,14 @@ class ProfilePage extends StatelessWidget {
             subtitle: Text(userDetailsController.userData!.userEmail),
           ),
           // const Divider(),
-          ProfileListTile(
-            title: 'My order',
-            subtitle: '0 orders',
-            onPress: () {},
+          Consumer<UserDetailsViewModel>(
+            builder: (context, value, child) => ProfileListTile(
+              title: 'My order',
+              subtitle: value.totalOrderList.length <= 1
+                  ? '${value.totalOrderList.length} order'
+                  : '${value.totalOrderList.length} orders',
+              onPress: () {},
+            ),
           ),
           Consumer<AddressViewModel>(
             builder: (context, value, child) => ProfileListTile(
