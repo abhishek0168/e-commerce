@@ -23,7 +23,7 @@ class PromoCodeViewModel extends ChangeNotifier {
   final productServices = FirebaseProductServices();
   final userDetailsModel = UserDetailsViewModel();
 
-  void init() async {
+  Future<void> init() async {
     promoCodes = await productServices.getPromoCodes();
   }
 
@@ -55,8 +55,6 @@ class PromoCodeViewModel extends ChangeNotifier {
     promoCodeKeyController.text = promocode;
     notifyListeners();
   }
-
-  
 
   void clearForm() {
     createdDateController.clear();

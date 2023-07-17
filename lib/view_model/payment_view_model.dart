@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:ecommerce_app/model/promo_code_model/promo_code_model.dart';
 import 'package:ecommerce_app/model/user_model/user_model.dart';
 import 'package:ecommerce_app/stripe_key.dart';
 import 'package:ecommerce_app/utils/constants.dart';
@@ -22,8 +23,12 @@ class PaymentViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> makePayment(
-      BuildContext context, String amount, UserAddress selectedAddress) async {
+  Future<String> makePayment({
+    required BuildContext context,
+    required String amount,
+    required UserAddress selectedAddress,
+    PromoCodeModel? promoCode,
+  }) async {
     try {
       loadingIdicator(context);
       paymentIntent = await createPaymentIntent(amount);
@@ -38,10 +43,16 @@ class PaymentViewModel extends ChangeNotifier {
                   merchantDisplayName: 'Abhishek'))
           .then((value) {});
       if (context.mounted) {
-        await displayPaymentSheet(context, selectedAddress);
+        await displayPaymentSheet(
+          context: context,
+          selectedAddress: selectedAddress,
+          promoCode: promoCode,
+        );
       }
+      return 'ok';
     } catch (e, s) {
       log('Makepayment => $e\n$s');
+      return 'error';
     }
   }
 
@@ -74,8 +85,11 @@ class PaymentViewModel extends ChangeNotifier {
     return calculatedAmount.toString();
   }
 
-  Future<void> displayPaymentSheet(
-      BuildContext context, UserAddress selectedAddress) async {
+  Future<void> displayPaymentSheet({
+    required BuildContext context,
+    required UserAddress selectedAddress,
+    PromoCodeModel? promoCode,
+  }) async {
     try {
       await Stripe.instance.presentPaymentSheet().then(
         (value) async {
@@ -94,9 +108,18 @@ class PaymentViewModel extends ChangeNotifier {
               ),
             ),
           );
+          final user = await userdetails.getUser();
+          if (user != null) {
+            await userdetails.clearUserCart(
+              selectedAddress: selectedAddress,
+              userId: user.id,
+              promoCode: promoCode,
+            );
+            await userdetails.fetchingUserData();
+          } else {
+            log('user is null payment');
+          }
           paymentIntent = null;
-          await userdetails.clearUserCart(selectedAddress);
-          await userdetails.fetchingUserData();
         },
       ).onError(
         (error, stackTrace) {

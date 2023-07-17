@@ -54,6 +54,16 @@ class FirebaseProductServices {
     await productDoc.set(dataModel);
   }
 
+  Future<void> updateProductSize(
+      {required String productId,
+      required Map<dynamic, dynamic> updatedSizes}) async {
+    final productDoc = _db.collection('Products').doc(productId);
+    final updatedJson = {
+      'productSizes': updatedSizes,
+    };
+    productDoc.update(updatedJson).then((value) => log('product size updated'));
+  }
+
   Future<void> uploadPromoCodeToDatabase(PromoCodeModel model) async {
     final promoDoc = _db.collection('Promocodes').doc();
     final promoCodeData = PromoCodeModel(
@@ -68,6 +78,15 @@ class FirebaseProductServices {
 
     final dataModel = promoCodeData.toJson();
     await promoDoc.set(dataModel);
+  }
+
+  updatePromoCode(
+      {required String promoCodeId, required List<String> usedUsers}) async {
+    final promoDoc = _db.collection('Promocodes').doc(promoCodeId);
+    Map<String, dynamic> updatedJson = {'usedUsers': usedUsers};
+    await promoDoc.update(updatedJson).then(
+          (value) => log('promocode updated'),
+        );
   }
 
   Future<void> updateDatabase(ProductModel model) async {
@@ -120,4 +139,3 @@ class FirebaseProductServices {
     return productData;
   }
 }
- 

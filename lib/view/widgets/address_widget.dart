@@ -30,25 +30,26 @@ class AddressShowWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(data.name),
-                TextButton(
-                  onPressed: () {
-                    if (isUpdate) {
-                      addressModel.editAddress(data);
-                      addressModel.isUpdating = true;
-                    }
-                    if (navigateTo != null) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => navigateTo!,
-                        ),
-                      );
-                    }
-                  },
-                  style: const ButtonStyle(
-                      padding: MaterialStatePropertyAll(EdgeInsets.zero)),
-                  child: isUpdate ? const Text('Edit') : const Text('Change'),
-                ),
+                if (navigateTo != null)
+                  TextButton(
+                    onPressed: () {
+                      if (isUpdate) {
+                        addressModel.editAddress(data);
+                        addressModel.isUpdating = true;
+                      }
+                      if (navigateTo != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => navigateTo!,
+                          ),
+                        );
+                      }
+                    },
+                    style: const ButtonStyle(
+                        padding: MaterialStatePropertyAll(EdgeInsets.zero)),
+                    child: isUpdate ? const Text('Edit') : const Text('Change'),
+                  ),
               ],
             ),
             Text(data.mobileNumber),

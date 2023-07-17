@@ -1,4 +1,5 @@
 import 'package:ecommerce_app/utils/constants.dart';
+import 'package:ecommerce_app/view/order_summary/display_order_list.dart';
 import 'package:ecommerce_app/view/profile_page/profile_listtile_widget.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view/user_address_adding_%20page/select_user_address.dart';
@@ -46,7 +47,13 @@ class ProfilePage extends StatelessWidget {
               subtitle: value.totalOrderList.length <= 1
                   ? '${value.totalOrderList.length} order'
                   : '${value.totalOrderList.length} orders',
-              onPress: () {},
+              onPress: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => DisplayOrderList(
+                      orderList: userDetailsController.totalOrderList.reversed
+                          .toList()),
+                ));
+              },
             ),
           ),
           Consumer<AddressViewModel>(

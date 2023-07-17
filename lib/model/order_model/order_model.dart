@@ -4,8 +4,12 @@ class OrderModel {
   final String date;
   final Map<dynamic, dynamic> address;
   final List<dynamic> cartDetails;
+  final String discount;
+  final String delivery;
 
   OrderModel({
+    required this.discount,
+    required this.delivery,
     required this.date,
     required this.id,
     required this.amount,

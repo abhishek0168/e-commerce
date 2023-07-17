@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/model/user_model/user_model.dart';
@@ -80,7 +79,7 @@ class FirebaseUserDetails {
       Map<String, dynamic> updateJson = {
         'userOrders': orderList,
       };
-      log('Order list $orderList');
+      // log('Order list $orderList');
       await docUser.update(updateJson).then((value) {
         log('Order list updated');
       });

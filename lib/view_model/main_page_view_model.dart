@@ -12,7 +12,7 @@ class MainPageViewModel extends ChangeNotifier {
 
   void init() async {
     await userDetails.init();
-    firebaseData.init();
+    // firebaseData.init();
     promoCodeModel.init();
     await addressViewModel.init();
   }

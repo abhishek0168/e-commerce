@@ -32,7 +32,8 @@ void main() async {
     );
   };
   WidgetsFlutterBinding.ensureInitialized();
-  Stripe.publishableKey = 'pk_test_51NT5iwSFB6cWaNPUZRnBwMmfGMv78RASH5wScFxqz11NMRpiFQIgchWV2Soz5qfUpvdHFUd9dN9oYA90tWwEipSs00q6H14450';
+  Stripe.publishableKey =
+      'pk_test_51NT5iwSFB6cWaNPUZRnBwMmfGMv78RASH5wScFxqz11NMRpiFQIgchWV2Soz5qfUpvdHFUd9dN9oYA90tWwEipSs00q6H14450';
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -50,7 +51,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => MainPageViewModel()..init()),
         ChangeNotifierProvider(create: (_) => UserDetailsViewModel()..init()),
-        ChangeNotifierProvider(create: (_) => DataFromFirebase()..init()),
+        ChangeNotifierProvider(create: (_) => DataFromFirebase()),
         ChangeNotifierProvider(create: (_) => ShopViewModel()),
         ChangeNotifierProvider(create: (_) => AdminPageViewModel()),
         ChangeNotifierProvider(create: (_) => PromoCodeViewModel()..init()),

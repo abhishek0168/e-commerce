@@ -17,16 +17,17 @@ class DataFromFirebase extends ChangeNotifier {
   final productServices = FirebaseProductServices();
 
 // Functions
-  void init() async {
-    await callPrductDetails();
-    selectedProductsData = productsData;
-  }
+  // void init() async {
+  //   await callPrductDetails();
+  //   selectedProductsData = productsData;
+  // }
 
-  Future<void> callPrductDetails() async {
+  Future<List<ProductModel>> callPrductDetails() async {
     productsData = await productServices.getProductDetails();
     log('$productsData product details callProductDetails()');
     selectedProductsData = productsData;
-    notifyListeners();
+    // notifyListeners();
+    return productsData;
   }
 
   Future<void> callSelectedProductDetails(String value) async {
@@ -34,7 +35,4 @@ class DataFromFirebase extends ChangeNotifier {
         await productServices.getSelectedProductDetails(value);
     notifyListeners();
   }
-
-
-  
 }

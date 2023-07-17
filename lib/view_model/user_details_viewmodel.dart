@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/model/order_model/order_model.dart';
 import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/model/promo_code_model/promo_code_model.dart';
@@ -10,9 +9,9 @@ import 'package:ecommerce_app/services/firebase_user_services.dart';
 import 'package:ecommerce_app/services/user_auth.dart';
 import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
-import 'package:ecommerce_app/view_model/user_address_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
 class UserDetailsViewModel extends ChangeNotifier {
   List<Map<dynamic, dynamic>> userCart = [];
@@ -22,6 +21,7 @@ class UserDetailsViewModel extends ChangeNotifier {
   int totalProductPrice = 0;
   double totalProductPriceWithoutDiscount = 0;
   double discountPrice = 0;
+  int promoCodeDiscount = 0;
   List<ProductModel> cartProductData = [];
   List<ProductModel> favProductData = [];
   List<ProductModel> totalProductData = [];
@@ -32,15 +32,13 @@ class UserDetailsViewModel extends ChangeNotifier {
   ScrollController cartScrollContoller = ScrollController();
   bool cartIsScrolling = true;
   bool isPromoCodeUsed = false;
-  String usedPromoCode = '';
-  int promoCodeDiscount = 0;
+  String? usedPromoCode;
 
   // instances
   final firebaseUserService = FirebaseUserDetails();
   final dataFromFirebase = DataFromFirebase();
   final productServices = FirebaseProductServices();
   final userAuth = UserAuthFirebase();
-  // final addressModel = AddressViewModel();
 
   Future<void> init() async {
     totalProductData = await productServices.getProductDetails();
@@ -91,6 +89,8 @@ class UserDetailsViewModel extends ChangeNotifier {
                 address: e['address'],
                 cartDetails: e['cartDetails'],
                 date: e['date'],
+                delivery: e['delivery'],
+                discount: e['discount'],
               ))
           .toList();
       // final bahu = userData!.userStatus;
@@ -106,7 +106,7 @@ class UserDetailsViewModel extends ChangeNotifier {
     } else {
       log('fetchingUserData()=> User is empty');
     }
-    cartProductData = sortCartProducts(userCart);
+    cartProductData = sortProducts(userCart);
     cartTotalPrice();
     favProductData = sortFavProducts(userFavs);
     notifyListeners();
@@ -147,16 +147,23 @@ class UserDetailsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> clearUserCart(UserAddress selectedAddress) async {
+  Future<void> clearUserCart({
+    required UserAddress selectedAddress,
+    required String userId,
+    PromoCodeModel? promoCode,
+  }) async {
     String date = DateFormat('dd-MM-yyyy').format(DateTime.now());
+    String id = const Uuid().v4();
+
     totalOrderList.add(
       OrderModel(
-        id: 'id',
-        amount: totalProductPrice.toString(),
-        address: selectedAddress.toJson(),
-        cartDetails: userCart,
-        date: date,
-      ),
+          id: id,
+          amount: totalProductPrice.toString(),
+          address: selectedAddress.toJson(),
+          cartDetails: userCart,
+          date: date,
+          delivery: '50',
+          discount: '${promoCodeDiscount + discountPrice}'),
     );
     List<Map<dynamic, dynamic>> orderList = totalOrderList
         .map((e) => {
@@ -165,18 +172,80 @@ class UserDetailsViewModel extends ChangeNotifier {
               'address': e.address,
               'cartDetails': e.cartDetails,
               'date': e.date,
+              'delivery': e.delivery,
+              'discount': e.discount,
             })
         .toList();
-    await firebaseUserService.updateUserOrder(orderList, userData!.id);
+    await firebaseUserService.updateUserOrder(orderList, userId);
+
+    for (var product in userCart) {
+      ProductModel productData = totalProductData
+          .where((element) => element.id == product['id'])
+          .single;
+      Map<dynamic, dynamic> json = {};
+      switch (product['size']) {
+        case 'S':
+          {
+            json = {
+              'S': productData.productSizes['S'] - product['count'],
+              'M': productData.productSizes['M'],
+              'L': productData.productSizes['L'],
+              'XL': productData.productSizes['XL'],
+            };
+          }
+          break;
+        case 'M':
+          {
+            json = {
+              'S': productData.productSizes['S'],
+              'M': productData.productSizes['M'] - product['count'],
+              'L': productData.productSizes['L'],
+              'XL': productData.productSizes['XL'],
+            };
+          }
+          break;
+        case 'L':
+          {
+            json = {
+              'S': productData.productSizes['S'],
+              'M': productData.productSizes['M'],
+              'L': productData.productSizes['L'] - product['count'],
+              'XL': productData.productSizes['XL'],
+            };
+          }
+          break;
+        default:
+          {
+            json = {
+              'S': productData.productSizes['S'],
+              'M': productData.productSizes['M'],
+              'L': productData.productSizes['L'],
+              'XL': productData.productSizes['XL'] - product['count'],
+            };
+          }
+      }
+      log('Updated $json');
+      await productServices.updateProductSize(
+          productId: productData.id, updatedSizes: json);
+    }
     userCart.clear();
     cartProductData.clear();
-    await firebaseUserService.updateUserCart(userCart, userData!.id);
+
+    if (promoCode != null) {
+      List<String> usedList =
+          promoCode.usedUsers.map((e) => e.toString()).toList();
+      usedList.add(userId);
+      await productServices.updatePromoCode(
+          promoCodeId: promoCode.id, usedUsers: usedList);
+    }
+
+    await firebaseUserService.updateUserCart(userCart, userId);
     await fetchingUserData();
     log('cartProductData $cartProductData');
     notifyListeners();
   }
 
-  List<ProductModel> sortCartProducts(List<Map<dynamic, dynamic>> userCart) {
+  List<ProductModel> sortProducts(List<dynamic> userCart) {
     Map<dynamic, dynamic> cartMap = {};
     for (var element in userCart) {
       cartMap[element['id']] = true;

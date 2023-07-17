@@ -23,7 +23,6 @@ class CartPage extends StatelessWidget {
     final userDetailsController = Provider.of<UserDetailsViewModel>(context);
     final promoCodeController = Provider.of<PromoCodeViewModel>(context);
     final screenSize = MediaQuery.sizeOf(context);
-
     userDetailsController.cartScrollContoller.addListener(() {
       if (userDetailsController
               .cartScrollContoller.position.userScrollDirection ==
@@ -180,11 +179,11 @@ class CartPage extends StatelessWidget {
                               message = 'Promo code removed';
                             } else {
                               message = userDetailsController.checkPromoCode(
-                                  promoCodeController
-                                      .promoCodeKeyController.text
-                                      .trim(),
-                                  userDetailsController.userData!.id,
-                                  promoCodeController.promoCodes);
+                                promoCodeController.promoCodeKeyController.text
+                                    .trim(),
+                                userDetailsController.userData!.id,
+                                promoCodeController.promoCodes,
+                              );
                             }
                             final snackBar = CustomeSnackBar().snackBar1(
                                 bgColor: AppColors.starColor, content: message);
@@ -209,7 +208,15 @@ class CartPage extends StatelessWidget {
                     CustomSubmitButton(
                       screenSize: screenSize,
                       onPress: () {
-                        Navigator.of(context).push(_createRoute());
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => ProductCheckOutPage(
+                              totalAmount:
+                                  '${userDetailsController.totalProductPrice}',
+                              promoCode: userDetailsController.usedPromoCode,
+                            ),
+                          ),
+                        );
                       },
                       title: 'check out',
                     ),
@@ -304,12 +311,15 @@ class CartPage extends StatelessWidget {
                       .copyWith(color: AppColors.grayColor),
                 ),
                 Consumer<UserDetailsViewModel>(
-                  builder: (context, value, child) => Text(
-                    value.totalProductPrice < 2000
-                        ? '₹${value.totalProductPrice + 50}'
-                        : '₹${value.totalProductPrice}',
-                    style: CustomeTextStyle.productName,
-                  ),
+                  builder: (context, value, child) {
+                    value.totalProductPrice = value.totalProductPrice < 2000
+                        ? value.totalProductPrice + 50
+                        : value.totalProductPrice;
+                    return Text(
+                      '₹${value.totalProductPrice}',
+                      style: CustomeTextStyle.productName,
+                    );
+                  },
                 )
               ],
             ),
@@ -320,23 +330,4 @@ class CartPage extends StatelessWidget {
       return const PageEmptyMessage();
     }
   }
-}
-
-Route _createRoute() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) =>
-        const ProductCheckOutPage(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(1.0, 0.0);
-      const end = Offset.zero;
-      const curve = Curves.ease;
-
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  );
 }

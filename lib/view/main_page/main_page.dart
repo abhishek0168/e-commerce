@@ -15,7 +15,7 @@ class MainPage extends StatelessWidget {
 
   final screens = [
     HomePage(),
-    ShopPage(),
+    const ShopPage(),
     const CartPage(),
     const FavoritePage(),
     const ProfilePage(),
