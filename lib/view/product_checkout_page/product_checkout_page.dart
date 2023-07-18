@@ -146,18 +146,21 @@ class ProductCheckOutPage extends StatelessWidget {
                         amount: totalAmount,
                         selectedAddress: addressController.selectedAddress!,
                         promoCode: discountPromo);
-                    if (message == 'ok' && context.mounted) {
+                    if (message == 'ok') {
                       await userDetailsModel.clearUserCart(
                         selectedAddress: addressController.selectedAddress!,
                         userId: userDetailsModel.userData!.id,
                         promoCode: discountPromo,
                       );
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => DisplayOrderSummary(
-                              orderData: userDetailsModel.totalOrderList.last),
-                        ),
-                      );
+                      if (context.mounted) {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => DisplayOrderSummary(
+                                orderData:
+                                    userDetailsModel.totalOrderList.last),
+                          ),
+                        );
+                      }
                     }
                   } else if (paymentController.selectedMethod ==
                       PaymentMethod.cod) {

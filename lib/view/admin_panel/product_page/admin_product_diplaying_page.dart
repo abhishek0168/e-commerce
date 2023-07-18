@@ -1,6 +1,7 @@
 import 'package:ecommerce_app/view/admin_panel/product_page/admin_product_adding_page.dart';
 import 'package:ecommerce_app/view/admin_panel/product_page/admin_product_view_page.dart';
 import 'package:ecommerce_app/view/admin_panel/promo_code_page/promo_code_adding.dart';
+import 'package:ecommerce_app/view/admin_panel/promo_code_page/promo_code_list.dart';
 import 'package:ecommerce_app/view/admin_panel/user_page/users_display.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
@@ -50,7 +51,7 @@ class AdminDisplayPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PromoCodeAddingPage(),
+                    builder: (context) => const PromoCodeList(),
                   ),
                 );
               },

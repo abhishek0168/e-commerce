@@ -1,4 +1,7 @@
+import 'package:ecommerce_app/model/order_model/order_model.dart';
 import 'package:ecommerce_app/model/user_model/user_model.dart';
+import 'package:ecommerce_app/utils/constants.dart';
+import 'package:ecommerce_app/view/order_summary/display_order_summary.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
@@ -11,10 +14,22 @@ class UserDetails extends StatelessWidget {
   final String userId;
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.sizeOf(context);
     final userDetailsModel = Provider.of<UserDetailsViewModel>(context);
     UserModel userData = userDetailsModel.usersList
         .where((element) => element.id == userId)
         .single;
+    final orderDetails = userData.userOrders!
+        .map((e) => OrderModel(
+              discount: e['discount'],
+              delivery: e['delivery'],
+              date: e['date'],
+              id: e['id'],
+              amount: e['amount'],
+              address: e['address'],
+              cartDetails: e['cartDetails'],
+            ))
+        .toList();
     return Scaffold(
       appBar: AppBar(),
       body: Stack(
@@ -58,7 +73,7 @@ class UserDetails extends StatelessWidget {
                       DataCell(Text(userData.userEmail)),
                     ],
                   ),
-                  DataRow(
+                  /* DataRow(
                     cells: [
                       const DataCell(Text('Block')),
                       DataCell(
@@ -105,9 +120,96 @@ class UserDetails extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
+                  ), */
                 ],
-              )
+              ),
+              height20,
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  'Orders',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              height10,
+              if (orderDetails.isNotEmpty)
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  itemBuilder: (context, index) {
+                    return Container(
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: (50 / 100) * screenSize.width,
+                                child: Text(
+                                  'Tracking no. : ${orderDetails[index].id}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              Text(orderDetails[index].date),
+                            ],
+                          ),
+                          height10,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                  'Items : ${orderDetails[index].cartDetails.length}'),
+                              Text(
+                                  'Total amount : ₹${orderDetails[index].amount}'),
+                            ],
+                          ),
+                          height10,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              OutlinedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DisplayOrderSummary(
+                                        orderData: orderDetails[index],
+                                      ),
+                                    ),
+                                  );
+                                },
+                                style: ButtonStyle(
+                                  foregroundColor: MaterialStatePropertyAll(
+                                      AppColors.sumbitColor),
+                                ),
+                                child: const Text('Details'),
+                              ),
+                              Text(
+                                'Delivered',
+                                style: TextStyle(color: AppColors.sumbitColor),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return height10;
+                  },
+                  itemCount: orderDetails.length,
+                )
+              else
+                const Center(child: Text('No orders available')),
             ],
           ),
           Consumer<UserDetailsViewModel>(
