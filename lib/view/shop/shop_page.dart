@@ -4,6 +4,7 @@ import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view/widgets/add_to_favorite.dart';
 import 'package:ecommerce_app/view/widgets/page_empty_message.dart';
 import 'package:ecommerce_app/view/widgets/product_card.dart';
+import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,6 @@ class ShopPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // final shopViewModel = context.watch<ShopViewModel>();
     final firebaseDataController = Provider.of<DataFromFirebase>(context);
-
     final userDetailsController = Provider.of<UserDetailsViewModel>(context);
     return RefreshIndicator(
       onRefresh: () => firebaseDataController.callPrductDetails(),
@@ -55,25 +55,35 @@ class ShopPage extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Consumer<DataFromFirebase>(
-                builder: (context, value, child) {
-                  // List<ProductModel> productData = value.selectedProductsData;
-                  return value.selectedProductsData.isNotEmpty
-                      ? AnimationLimiter(
-                          child: GridView.builder(
-                            itemCount: value.selectedProductsData.length,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 0.5,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 15,
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
+              child: FutureBuilder(
+                future: firebaseDataController.selectedPage ==
+                        ChooseShopPage.all
+                    ? firebaseDataController.callPrductDetails()
+                    : firebaseDataController.selectedPage == ChooseShopPage.men
+                        ? firebaseDataController
+                            .callSelectedProductDetails('Male')
+                        : firebaseDataController
+                            .callSelectedProductDetails('Female'),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data!.isNotEmpty) {
+                      final selectedProductsData = snapshot.data;
+                      return AnimationLimiter(
+                        child: GridView.builder(
+                          itemCount: selectedProductsData!.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.5,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 15,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            if (selectedProductsData[index].productStock != 0) {
                               return AnimationConfiguration.staggeredGrid(
                                 position: index,
                                 duration: const Duration(milliseconds: 375),
-                                columnCount: value.selectedProductsData.length,
+                                columnCount: selectedProductsData.length,
                                 child: ScaleAnimation(
                                   child: InkWell(
                                     onTap: () => Navigator.push(
@@ -81,35 +91,44 @@ class ShopPage extends StatelessWidget {
                                       MaterialPageRoute(
                                         builder: (context) => ProductViewPage(
                                           productDetails:
-                                              value.selectedProductsData[index],
+                                              selectedProductsData[index],
                                         ),
                                       ),
                                     ),
                                     child: ProductCard(
-                                      productModel:
-                                          value.selectedProductsData[index],
+                                      productModel: selectedProductsData[index],
                                       iconWidget: AddToFavoriteWidget(
-                                          productId: value
-                                              .selectedProductsData[index].id,
+                                          productId:
+                                              selectedProductsData[index].id,
                                           onPress: () {
                                             userDetailsController.addtoFav(
-                                                value
-                                                    .selectedProductsData[index]
-                                                    .id,
+                                                selectedProductsData[index].id,
                                                 context);
                                           }),
                                     ),
                                   ),
                                 ),
                               );
-                            },
-                          ),
-                        )
-                      : const PageEmptyMessage();
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                      );
+                    } else {
+                      return const PageEmptyMessage();
+                    }
+                  } else if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('Somthing went wrong'),
+                    );
+                  } else {
+                    return threeDotLoadingAnimation();
+                  }
                 },
               ),
             ),
-          ),
+          )
         ],
       ),
     );

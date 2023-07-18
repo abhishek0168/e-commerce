@@ -4,13 +4,13 @@ class CustomSubmitButton extends StatelessWidget {
   const CustomSubmitButton({
     super.key,
     required this.screenSize,
-    required this.onPress,
+    this.onPress,
     required this.title,
     this.bgColor,
   });
 
   final Size screenSize;
-  final VoidCallback onPress;
+  final VoidCallback? onPress;
   final String title;
   final Color? bgColor;
   @override

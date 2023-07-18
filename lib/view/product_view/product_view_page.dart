@@ -37,12 +37,12 @@ class ProductViewPage extends StatelessWidget {
               floating: true,
               toolbarHeight: 40,
               elevation: 10,
-              actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.share),
-                ),
-              ],
+              // actions: [
+              //   IconButton(
+              //     onPressed: () {},
+              //     icon: const Icon(Icons.share),
+              //   ),
+              // ],
             ),
           ];
         },

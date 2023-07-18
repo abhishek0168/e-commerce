@@ -9,6 +9,8 @@ import 'package:ecommerce_app/services/firebase_user_services.dart';
 import 'package:ecommerce_app/services/user_auth.dart';
 import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
@@ -42,6 +44,7 @@ class UserDetailsViewModel extends ChangeNotifier {
 
   Future<void> init() async {
     totalProductData = await productServices.getProductDetails();
+    FirebaseAuth.instance.currentUser!.reload();
     await fetchingUserData();
   }
 
@@ -93,16 +96,16 @@ class UserDetailsViewModel extends ChangeNotifier {
                 discount: e['discount'],
               ))
           .toList();
-      // final bahu = userData!.userStatus;
+
       userFavs = userData!.userFavList!.map((e) => e.toString()).toList();
 
-      log('fetchingUserData()=> name : ${userData!.userName}');
-      log('fetchingUserData()=> id : ${userData!.id}');
-      log('fetchingUserData()=> email : ${userData!.userEmail}');
-      log('fetchingUserData()=> status : ${userData!.userStatus}');
-      log('fetchingUserData()=> fav : $userFavs');
-      log('fetchingUserData()=> cart : $userCart');
-      log('fetchingUserData()=> Total product data : $totalProductData');
+      // log('fetchingUserData()=> name : ${userData!.userName}');
+      // log('fetchingUserData()=> id : ${userData!.id}');
+      // log('fetchingUserData()=> email : ${userData!.userEmail}');
+      // log('fetchingUserData()=> status : ${userData!.userStatus}');
+      // log('fetchingUserData()=> fav : $userFavs');
+      // log('fetchingUserData()=> cart : $userCart');
+      // log('fetchingUserData()=> Total product data : $totalProductData');
     } else {
       log('fetchingUserData()=> User is empty');
     }
@@ -152,97 +155,108 @@ class UserDetailsViewModel extends ChangeNotifier {
     required String userId,
     PromoCodeModel? promoCode,
   }) async {
-    String date = DateFormat('dd-MM-yyyy').format(DateTime.now());
-    String id = const Uuid().v4();
+    try {
+      String date = DateFormat('dd-MM-yyyy').format(DateTime.now());
+      String id = const Uuid().v4();
+      log('$promoCodeDiscount');
+      log('$discountPrice');
+      log('${userCart.length}');
+      totalOrderList.add(
+        OrderModel(
+            id: id,
+            amount: totalProductPrice.toString(),
+            address: selectedAddress.toJson(),
+            cartDetails: userCart,
+            date: date,
+            delivery: '50',
+            discount: '${promoCodeDiscount + discountPrice}'),
+      );
+      List<Map<dynamic, dynamic>> orderList = totalOrderList
+          .map((e) => {
+                'id': e.id,
+                'amount': e.amount,
+                'address': e.address,
+                'cartDetails': e.cartDetails,
+                'date': e.date,
+                'delivery': e.delivery,
+                'discount': e.discount,
+              })
+          .toList();
+      await firebaseUserService.updateUserOrder(orderList, userId);
 
-    totalOrderList.add(
-      OrderModel(
-          id: id,
-          amount: totalProductPrice.toString(),
-          address: selectedAddress.toJson(),
-          cartDetails: userCart,
-          date: date,
-          delivery: '50',
-          discount: '${promoCodeDiscount + discountPrice}'),
-    );
-    List<Map<dynamic, dynamic>> orderList = totalOrderList
-        .map((e) => {
-              'id': e.id,
-              'amount': e.amount,
-              'address': e.address,
-              'cartDetails': e.cartDetails,
-              'date': e.date,
-              'delivery': e.delivery,
-              'discount': e.discount,
-            })
-        .toList();
-    await firebaseUserService.updateUserOrder(orderList, userId);
+      for (var product in userCart) {
+        ProductModel productData = totalProductData
+            .where((element) => element.id == product['id'])
+            .single;
+        Map<dynamic, dynamic> json = {};
+        switch (product['size']) {
+          case 'S':
+            {
+              json = {
+                'S': productData.productSizes['S'] - product['count'],
+                'M': productData.productSizes['M'],
+                'L': productData.productSizes['L'],
+                'XL': productData.productSizes['XL'],
+              };
+            }
+            break;
+          case 'M':
+            {
+              json = {
+                'S': productData.productSizes['S'],
+                'M': productData.productSizes['M'] - product['count'],
+                'L': productData.productSizes['L'],
+                'XL': productData.productSizes['XL'],
+              };
+            }
+            break;
+          case 'L':
+            {
+              json = {
+                'S': productData.productSizes['S'],
+                'M': productData.productSizes['M'],
+                'L': productData.productSizes['L'] - product['count'],
+                'XL': productData.productSizes['XL'],
+              };
+            }
+            break;
+          default:
+            {
+              json = {
+                'S': productData.productSizes['S'],
+                'M': productData.productSizes['M'],
+                'L': productData.productSizes['L'],
+                'XL': productData.productSizes['XL'] - product['count'],
+              };
+            }
+        }
+        var totalProductCount = productData.productStock - product['count'];
 
-    for (var product in userCart) {
-      ProductModel productData = totalProductData
-          .where((element) => element.id == product['id'])
-          .single;
-      Map<dynamic, dynamic> json = {};
-      switch (product['size']) {
-        case 'S':
-          {
-            json = {
-              'S': productData.productSizes['S'] - product['count'],
-              'M': productData.productSizes['M'],
-              'L': productData.productSizes['L'],
-              'XL': productData.productSizes['XL'],
-            };
-          }
-          break;
-        case 'M':
-          {
-            json = {
-              'S': productData.productSizes['S'],
-              'M': productData.productSizes['M'] - product['count'],
-              'L': productData.productSizes['L'],
-              'XL': productData.productSizes['XL'],
-            };
-          }
-          break;
-        case 'L':
-          {
-            json = {
-              'S': productData.productSizes['S'],
-              'M': productData.productSizes['M'],
-              'L': productData.productSizes['L'] - product['count'],
-              'XL': productData.productSizes['XL'],
-            };
-          }
-          break;
-        default:
-          {
-            json = {
-              'S': productData.productSizes['S'],
-              'M': productData.productSizes['M'],
-              'L': productData.productSizes['L'],
-              'XL': productData.productSizes['XL'] - product['count'],
-            };
-          }
+        log('Updated $json');
+        await productServices.updateProductSize(
+          productId: productData.id,
+          updatedSizes: json,
+          totalCount: totalProductCount.toInt(),
+        );
       }
-      log('Updated $json');
-      await productServices.updateProductSize(
-          productId: productData.id, updatedSizes: json);
-    }
-    userCart.clear();
-    cartProductData.clear();
+      userCart.clear();
+      cartProductData.clear();
 
-    if (promoCode != null) {
-      List<String> usedList =
-          promoCode.usedUsers.map((e) => e.toString()).toList();
-      usedList.add(userId);
-      await productServices.updatePromoCode(
-          promoCodeId: promoCode.id, usedUsers: usedList);
-    }
+      if (promoCode != null) {
+        List<String> usedList =
+            promoCode.usedUsers.map((e) => e.toString()).toList();
+        usedList.add(userId);
+        await productServices.updatePromoCode(
+            promoCodeId: promoCode.id, usedUsers: usedList);
+      }
 
-    await firebaseUserService.updateUserCart(userCart, userId);
-    await fetchingUserData();
-    log('cartProductData $cartProductData');
-    notifyListeners();
+      await firebaseUserService.updateUserCart(userCart, userId);
+      await fetchingUserData();
+      log('cartProductData $cartProductData');
+      notifyListeners();
+    } catch (e) {
+      log('clearCart()=> Error\n$e');
+    }
   }
 
   List<ProductModel> sortProducts(List<dynamic> userCart) {

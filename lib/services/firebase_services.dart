@@ -56,12 +56,22 @@ class FirebaseProductServices {
 
   Future<void> updateProductSize(
       {required String productId,
-      required Map<dynamic, dynamic> updatedSizes}) async {
+      required Map<dynamic, dynamic> updatedSizes,
+      required int totalCount}) async {
     final productDoc = _db.collection('Products').doc(productId);
     final updatedJson = {
       'productSizes': updatedSizes,
     };
-    productDoc.update(updatedJson).then((value) => log('product size updated'));
+    final updatedJsonTotalStock = {
+      'productStock': totalCount,
+    };
+
+    await productDoc
+        .update(updatedJson)
+        .then((value) => log('product size updated'));
+    await productDoc
+        .update(updatedJsonTotalStock)
+        .then((value) => log('product total stock updated'));
   }
 
   Future<void> uploadPromoCodeToDatabase(PromoCodeModel model) async {

@@ -23,12 +23,11 @@ class PaymentViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String> makePayment({
-    required BuildContext context,
-    required String amount,
-    required UserAddress selectedAddress,
-    PromoCodeModel? promoCode,
-  }) async {
+  Future<String> makePayment(
+      {required BuildContext context,
+      required String amount,
+      required UserAddress selectedAddress,
+      PromoCodeModel? promoCode}) async {
     try {
       loadingIdicator(context);
       paymentIntent = await createPaymentIntent(amount);
@@ -108,17 +107,7 @@ class PaymentViewModel extends ChangeNotifier {
               ),
             ),
           );
-          final user = await userdetails.getUser();
-          if (user != null) {
-            await userdetails.clearUserCart(
-              selectedAddress: selectedAddress,
-              userId: user.id,
-              promoCode: promoCode,
-            );
-            await userdetails.fetchingUserData();
-          } else {
-            log('user is null payment');
-          }
+
           paymentIntent = null;
         },
       ).onError(

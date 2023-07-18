@@ -2,6 +2,7 @@
 import 'package:ecommerce_app/utils/constants.dart';
 
 import 'package:ecommerce_app/view/admin_panel/product_page/admin_product_diplaying_page.dart';
+import 'package:ecommerce_app/view/mail_verification_page/mail_verification_page.dart';
 import 'package:ecommerce_app/view/main_page/main_page.dart';
 import 'package:ecommerce_app/view/sign_in_and_sign_up/Auth_page.dart';
 import 'package:ecommerce_app/view/widgets/waiting_page.dart';
@@ -66,7 +67,7 @@ class SelectPage extends StatelessWidget {
                               child: Text('Somthing went wrong !'),
                             );
                           } else if (snapshot.hasData) {
-                            return MainPage();
+                            return const MailVerificationPage();
                           } else if (snapshot.hasData &&
                               userViewModel.userData!.userStatus == false) {
                             authController.signOutUser();

@@ -147,6 +147,11 @@ class ProductCheckOutPage extends StatelessWidget {
                         selectedAddress: addressController.selectedAddress!,
                         promoCode: discountPromo);
                     if (message == 'ok' && context.mounted) {
+                      await userDetailsModel.clearUserCart(
+                        selectedAddress: addressController.selectedAddress!,
+                        userId: userDetailsModel.userData!.id,
+                        promoCode: discountPromo,
+                      );
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (context) => DisplayOrderSummary(

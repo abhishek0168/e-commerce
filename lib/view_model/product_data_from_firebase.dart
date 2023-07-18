@@ -4,6 +4,12 @@ import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/services/firebase_services.dart';
 import 'package:flutter/material.dart';
 
+enum ChooseShopPage {
+  all,
+  men,
+  women,
+}
+
 class DataFromFirebase extends ChangeNotifier {
 //variables
 
@@ -11,6 +17,7 @@ class DataFromFirebase extends ChangeNotifier {
   List<ProductModel> womenProductDatas = [];
   List<ProductModel> menProductDatas = [];
   List<ProductModel> selectedProductsData = [];
+  var selectedPage = ChooseShopPage.all;
 
 // instances
 
@@ -30,9 +37,10 @@ class DataFromFirebase extends ChangeNotifier {
     return productsData;
   }
 
-  Future<void> callSelectedProductDetails(String value) async {
+  Future<List<ProductModel>> callSelectedProductDetails(String value) async {
     selectedProductsData =
         await productServices.getSelectedProductDetails(value);
     notifyListeners();
+    return selectedProductsData;
   }
 }

@@ -21,14 +21,21 @@ class HomePageSection1 extends StatelessWidget {
     final screenSize = MediaQuery.of(context).size;
     return Column(
       children: [
-        SizedBox(
-          width: screenSize.width,
-          height: screenSize.height / 2,
-          child: ImageDispaly(
-            imgaeDr: imageDr[0],
-            text: 'New collection',
-            position: TextPosition.bottom,
-            alignment: Alignment.topCenter,
+        InkWell(
+          onTap: () async {
+            // await firebaseDataController.callPrductDetails();
+            firebaseDataController.selectedPage = ChooseShopPage.all;
+            mainPageController.changeIndex(1);
+          },
+          child: SizedBox(
+            width: screenSize.width,
+            height: screenSize.height / 2,
+            child: ImageDispaly(
+              imgaeDr: imageDr[0],
+              text: 'New collection',
+              position: TextPosition.bottom,
+              alignment: Alignment.topCenter,
+            ),
           ),
         ),
         SizedBox(
@@ -39,8 +46,7 @@ class HomePageSection1 extends StatelessWidget {
               InkWell(
                 onTap: () async {
                   log("Home page Women section tabed");
-                  await firebaseDataController
-                      .callSelectedProductDetails('Female');
+                  firebaseDataController.selectedPage = ChooseShopPage.women;
                   mainPageController.changeIndex(1);
                 },
                 child: SizedBox(
@@ -55,8 +61,8 @@ class HomePageSection1 extends StatelessWidget {
               InkWell(
                 onTap: () async {
                   log("Home page Women section tabed");
-                  await firebaseDataController
-                      .callSelectedProductDetails('Male');
+                  firebaseDataController.selectedPage = ChooseShopPage.men;
+
                   mainPageController.changeIndex(1);
                 },
                 child: SizedBox(
