@@ -10,7 +10,6 @@ import 'package:ecommerce_app/services/user_auth.dart';
 import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
@@ -154,8 +153,10 @@ class UserDetailsViewModel extends ChangeNotifier {
     required UserAddress selectedAddress,
     required String userId,
     PromoCodeModel? promoCode,
+    required BuildContext context,
   }) async {
     try {
+      loadingIdicator(context);
       String date = DateFormat('dd-MM-yyyy').format(DateTime.now());
       String id = const Uuid().v4();
       log('$promoCodeDiscount');
@@ -253,6 +254,9 @@ class UserDetailsViewModel extends ChangeNotifier {
       await firebaseUserService.updateUserCart(userCart, userId);
       await fetchingUserData();
       log('cartProductData $cartProductData');
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
       notifyListeners();
     } catch (e) {
       log('clearCart()=> Error\n$e');

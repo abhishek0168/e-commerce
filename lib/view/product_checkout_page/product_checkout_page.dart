@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:ecommerce_app/model/promo_code_model/promo_code_model.dart';
 import 'package:ecommerce_app/utils/constants.dart';
-import 'package:ecommerce_app/view/order_summary/display_order_summary.dart';
+import 'package:ecommerce_app/view/order_summary/order_succesful_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view/user_address_adding_%20page/select_user_address.dart';
 import 'package:ecommerce_app/view/widgets/address_widget.dart';
@@ -146,35 +146,39 @@ class ProductCheckOutPage extends StatelessWidget {
                         amount: totalAmount,
                         selectedAddress: addressController.selectedAddress!,
                         promoCode: discountPromo);
-                    if (message == 'ok') {
+                    if (message == 'ok' && context.mounted) {
                       await userDetailsModel.clearUserCart(
+                        context: context,
                         selectedAddress: addressController.selectedAddress!,
                         userId: userDetailsModel.userData!.id,
                         promoCode: discountPromo,
                       );
+
                       if (context.mounted) {
-                        Navigator.of(context).pushReplacement(
+                        Navigator.pushReplacement(
+                          context,
                           MaterialPageRoute(
-                            builder: (context) => DisplayOrderSummary(
-                                orderData:
-                                    userDetailsModel.totalOrderList.last),
+                            builder: (BuildContext context) =>
+                                const OrderSuccessfulPage(),
                           ),
                         );
                       }
                     }
                   } else if (paymentController.selectedMethod ==
                       PaymentMethod.cod) {
-                    log('cash on delivery selected');
-                    await userDetailsModel.clearUserCart(
-                      selectedAddress: addressController.selectedAddress!,
-                      userId: userDetailsModel.userData!.id,
-                      promoCode: discountPromo,
-                    );
+                    // log('cash on delivery selected');
+                    // await userDetailsModel.clearUserCart(
+                    //   selectedAddress: addressController.selectedAddress!,
+                    //   userId: userDetailsModel.userData!.id,
+                    //   context: context,
+                    //   promoCode: discountPromo,
+                    // );
                     if (context.mounted) {
-                      Navigator.of(context).pushReplacement(
+                      Navigator.pushReplacement(
+                        context,
                         MaterialPageRoute(
-                          builder: (context) => DisplayOrderSummary(
-                              orderData: userDetailsModel.totalOrderList.last),
+                          builder: (BuildContext context) =>
+                              const OrderSuccessfulPage(),
                         ),
                       );
                     }
