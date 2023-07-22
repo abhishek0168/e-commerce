@@ -45,7 +45,7 @@ class ShopPage extends StatelessWidget {
                 ),
                 PopupMenuButton(
                   onSelected: (value) {
-                    firebaseDataController.sortOnPress(value);
+                    firebaseDataController.sortOnPress(value, context);
                   },
                   initialValue: SortProductBy.name,
                   itemBuilder: (context) => const [

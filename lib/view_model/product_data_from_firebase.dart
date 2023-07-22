@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ecommerce_app/model/product_model/product_model.dart';
 import 'package:ecommerce_app/services/firebase_services.dart';
+import 'package:ecommerce_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 enum ChooseShopPage {
@@ -45,9 +46,18 @@ class DataFromFirebase extends ChangeNotifier {
     return selectedProductsData;
   }
 
-  Future<void> sortOnPress(SortProductBy value) async {
+  Future<void> sortOnPress(SortProductBy value, BuildContext context) async {
+    loadingIdicator(context);
+    await Future.delayed(
+      const Duration(
+        seconds: 2,
+      ),
+    );
     sortValue = value;
     await sortProducts();
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
     notifyListeners();
   }
 
