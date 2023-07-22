@@ -10,6 +10,12 @@ enum ChooseShopPage {
   women,
 }
 
+enum SortProductBy {
+  name,
+  price,
+  discount,
+}
+
 class DataFromFirebase extends ChangeNotifier {
 //variables
 
@@ -18,16 +24,11 @@ class DataFromFirebase extends ChangeNotifier {
   List<ProductModel> menProductDatas = [];
   List<ProductModel> selectedProductsData = [];
   var selectedPage = ChooseShopPage.all;
+  SortProductBy? sortValue;
 
 // instances
 
   final productServices = FirebaseProductServices();
-
-// Functions
-  // void init() async {
-  //   await callPrductDetails();
-  //   selectedProductsData = productsData;
-  // }
 
   Future<List<ProductModel>> callPrductDetails() async {
     productsData = await productServices.getProductDetails();
@@ -42,5 +43,50 @@ class DataFromFirebase extends ChangeNotifier {
         await productServices.getSelectedProductDetails(value);
     notifyListeners();
     return selectedProductsData;
+  }
+
+  Future<void> sortOnPress(SortProductBy value) async {
+    sortValue = value;
+    await sortProducts();
+    notifyListeners();
+  }
+
+  Future<List<ProductModel>> sortProducts() async {
+    List<ProductModel> productList;
+
+    switch (selectedPage) {
+      case ChooseShopPage.men:
+        log('Male selected');
+        return productList = await callSelectedProductDetails('Male');
+      case ChooseShopPage.women:
+        log('Female selected');
+        return productList = await callSelectedProductDetails('Female');
+      default:
+        log('all selected');
+        productList = await callPrductDetails();
+    }
+
+    switch (sortValue) {
+      case SortProductBy.name:
+        log('name selected');
+        productList.sort((a, b) => a.brandName.compareTo(b.brandName));
+        break;
+      case SortProductBy.price:
+        log('price selected');
+        productList.sort((a, b) =>
+            a.productDiscountedprice.compareTo(b.productDiscountedprice));
+        break;
+      case SortProductBy.discount:
+        log('discount selected');
+        productList
+            .sort((a, b) => b.productDiscount.compareTo(a.productDiscount));
+        break;
+      default:
+        log('null selected');
+    }
+    for (var e in productList) {
+      log(e.brandName);
+    }
+    return productList;
   }
 }

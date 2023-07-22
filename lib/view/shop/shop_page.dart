@@ -1,4 +1,3 @@
-
 import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/product_view/product_view_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
@@ -44,12 +43,43 @@ class ShopPage extends StatelessWidget {
                   icon: const Icon(Icons.filter_list),
                   label: const Text('Filter'),
                 ),
-                TextButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.swap_vert),
-                  label: const Text('Sort'),
-                ),
-                
+                PopupMenuButton(
+                  onSelected: (value) {
+                    firebaseDataController.sortOnPress(value);
+                  },
+                  initialValue: SortProductBy.name,
+                  itemBuilder: (context) => const [
+                    PopupMenuItem(
+                      value: SortProductBy.name,
+                      child: Text('Name'),
+                    ),
+                    PopupMenuItem(
+                      value: SortProductBy.price,
+                      child: Text('Price'),
+                    ),
+                    PopupMenuItem(
+                      value: SortProductBy.discount,
+                      child: Text('Discount'),
+                    ),
+                  ],
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.swap_vert,
+                        color: AppColors.primaryColor,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        'Sort',
+                        style: TextStyle(
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
           ),
@@ -58,14 +88,7 @@ class ShopPage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: FutureBuilder(
-                future: firebaseDataController.selectedPage ==
-                        ChooseShopPage.all
-                    ? firebaseDataController.callPrductDetails()
-                    : firebaseDataController.selectedPage == ChooseShopPage.men
-                        ? firebaseDataController
-                            .callSelectedProductDetails('Male')
-                        : firebaseDataController
-                            .callSelectedProductDetails('Female'),
+                future: firebaseDataController.sortProducts(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     if (snapshot.data!.isNotEmpty) {

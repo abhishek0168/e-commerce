@@ -7,7 +7,6 @@ enum TextPosition {
 }
 
 class ImageDispaly extends StatelessWidget {
-  
   const ImageDispaly(
       {super.key,
       required this.imgaeDr,

@@ -34,6 +34,7 @@ class HomePageSection1 extends StatelessWidget {
               imgaeDr: imageDr[0],
               text: 'New collection',
               position: TextPosition.bottom,
+              
               alignment: Alignment.topCenter,
             ),
           ),
