@@ -17,11 +17,11 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userDetailsController = Provider.of<UserDetailsViewModel>(context);
+    final userDetailsController = context.read<UserDetailsViewModel>();
     // final userAddressModel = Provider.of<AddressViewModel>(context);
-    final signInpageViewModel = Provider.of<SignInPageViewModel>(context);
-    final mainPageviewModel = context.watch<MainPageViewModel>();
-
+    final signInpageViewModel = context.read<SignInPageViewModel>();
+    final mainPageviewModel = context.read<MainPageViewModel>();
+    userDetailsController.init();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: ListView(
@@ -32,13 +32,15 @@ class ProfilePage extends StatelessWidget {
                 .copyWith(color: AppColors.primaryColor),
           ),
           height20,
-          ListTile(
-            // leading: SvgPicture.asset(
-            //   'assets/svgs/user-image-with-black-background-svgrepo-com.svg',
-            //   width: 60,
-            // ),
-            title: H2(text: userDetailsController.userData!.userName),
-            subtitle: Text(userDetailsController.userData!.userEmail),
+          Consumer<UserDetailsViewModel>(
+            builder: (context, value, child) => ListTile(
+              // leading: SvgPicture.asset(
+              //   'assets/svgs/user-image-with-black-background-svgrepo-com.svg',
+              //   width: 60,
+              // ),
+              title: H2(text: '${value.userData?.userName}'),
+              subtitle: Text('${value.userData?.userEmail}'),
+            ),
           ),
           // const Divider(),
           Consumer<UserDetailsViewModel>(

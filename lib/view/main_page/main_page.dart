@@ -24,7 +24,8 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mainPageviewModel = context.watch<MainPageViewModel>();
-    final userDetailsController = Provider.of<UserDetailsViewModel>(context);
+    final userDetailsController = context.read<UserDetailsViewModel>();
+    userDetailsController.init();
     // userDetailsController.fetchingUserData();
 
     return SafeArea(

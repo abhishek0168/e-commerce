@@ -1,3 +1,4 @@
+
 import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view/product_view/product_view_page.dart';
 import 'package:ecommerce_app/view/theme/app_color_theme.dart';
@@ -48,6 +49,7 @@ class ShopPage extends StatelessWidget {
                   icon: const Icon(Icons.swap_vert),
                   label: const Text('Sort'),
                 ),
+                
               ],
             ),
           ),

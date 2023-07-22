@@ -71,8 +71,10 @@ class UserDetailsViewModel extends ChangeNotifier {
     return usersList;
   }
 
+  // fd
+
   Future<void> fetchingUserData() async {
-    userData = await firebaseUserService.getUserDetails();
+    userData = await FirebaseUserDetails().getUserDetails();
 
     if (userData != null) {
       userCart = userData!.userCart!
@@ -105,13 +107,14 @@ class UserDetailsViewModel extends ChangeNotifier {
       // log('fetchingUserData()=> fav : $userFavs');
       // log('fetchingUserData()=> cart : $userCart');
       // log('fetchingUserData()=> Total product data : $totalProductData');
+
+      cartProductData = sortProducts(userCart);
+      cartTotalPrice();
+      favProductData = sortFavProducts(userFavs);
+      notifyListeners();
     } else {
       log('fetchingUserData()=> User is empty');
     }
-    cartProductData = sortProducts(userCart);
-    cartTotalPrice();
-    favProductData = sortFavProducts(userFavs);
-    notifyListeners();
   }
 
   Future<void> addToCart({
@@ -159,9 +162,7 @@ class UserDetailsViewModel extends ChangeNotifier {
       loadingIdicator(context);
       String date = DateFormat('dd-MM-yyyy').format(DateTime.now());
       String id = const Uuid().v4();
-      log('$promoCodeDiscount');
-      log('$discountPrice');
-      log('${userCart.length}');
+
       totalOrderList.add(
         OrderModel(
             id: id,
@@ -233,7 +234,6 @@ class UserDetailsViewModel extends ChangeNotifier {
         }
         var totalProductCount = productData.productStock - product['count'];
 
-        log('Updated $json');
         await productServices.updateProductSize(
           productId: productData.id,
           updatedSizes: json,
@@ -253,10 +253,11 @@ class UserDetailsViewModel extends ChangeNotifier {
 
       await firebaseUserService.updateUserCart(userCart, userId);
       await fetchingUserData();
-      log('cartProductData $cartProductData');
+
       if (context.mounted) {
         Navigator.pop(context);
       }
+      await DataFromFirebase().callPrductDetails();
       notifyListeners();
     } catch (e) {
       log('clearCart()=> Error\n$e');
@@ -276,7 +277,6 @@ class UserDetailsViewModel extends ChangeNotifier {
       }
     }
 
-    log('getCartProducts()=> $totalProductPrice');
     return tempList;
   }
 
@@ -335,7 +335,6 @@ class UserDetailsViewModel extends ChangeNotifier {
     } else {
       userFavs.add(productId);
     }
-    log('addtoFav()=> fav : $userFavs');
 
     await firebaseUserService.updateUserFav(userFavs, userData!.id);
     await fetchingUserData();
@@ -373,7 +372,7 @@ class UserDetailsViewModel extends ChangeNotifier {
         cartTotalPrice();
         usedPromoCode = promoCode;
         isPromoCodeUsed = true;
-        log(totalProductPrice.toString());
+
         promoCodeDiscount =
             ((promoModel.discount / 100) * totalProductPrice).toInt();
         totalProductPrice -= promoCodeDiscount;

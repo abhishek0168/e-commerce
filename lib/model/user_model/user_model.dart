@@ -38,8 +38,8 @@ class UserModel {
   factory UserModel.fromJson(DocumentSnapshot<Map<String, dynamic>> document) {
     final data = document.data();
     return UserModel(
-      id: document.id,
-      userName: data!['Name'],
+      id: data!['id'],
+      userName: data['Name'],
       userEmail: data['Email'],
       userPassword: data['Password'],
       userAddress: data['userAddress'],

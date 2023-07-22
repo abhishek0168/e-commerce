@@ -166,13 +166,13 @@ class ProductCheckOutPage extends StatelessWidget {
                     }
                   } else if (paymentController.selectedMethod ==
                       PaymentMethod.cod) {
-                    // log('cash on delivery selected');
-                    // await userDetailsModel.clearUserCart(
-                    //   selectedAddress: addressController.selectedAddress!,
-                    //   userId: userDetailsModel.userData!.id,
-                    //   context: context,
-                    //   promoCode: discountPromo,
-                    // );
+                    log('cash on delivery selected');
+                    await userDetailsModel.clearUserCart(
+                      selectedAddress: addressController.selectedAddress!,
+                      userId: userDetailsModel.userData!.id,
+                      context: context,
+                      promoCode: discountPromo,
+                    );
                     if (context.mounted) {
                       Navigator.pushReplacement(
                         context,

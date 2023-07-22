@@ -29,6 +29,7 @@ class AddressViewModel extends ChangeNotifier {
   }
 
   Future<List<UserAddress>> getUserAddress() async {
+    log('getUserAddress');
     userData = await firebaseUserService.getUserDetails();
     if (userData != null && userData!.userAddress != null) {
       userAddresss = userData!.userAddress!
@@ -49,7 +50,7 @@ class AddressViewModel extends ChangeNotifier {
           .toList();
       log('getUserAddress()=> $userAddresss');
     }
-    // notifyListeners();
+    notifyListeners();
     return userAddresss;
   }
 

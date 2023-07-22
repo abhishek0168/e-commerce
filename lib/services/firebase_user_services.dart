@@ -25,7 +25,9 @@ class FirebaseUserDetails {
             .where('Email', isEqualTo: user.email)
             .get();
 
-        final userData = snapshot.docs.map((e) => UserModel.fromJson(e)).single;
+        final userData = UserModel.fromJson(snapshot.docs.first);
+        // final userData = snapshot.docs.map((e) => UserModel.fromJson(e)).single;
+        log(userData.userName);
         return userData;
       } else {
         log('user is null getUserDetails()');

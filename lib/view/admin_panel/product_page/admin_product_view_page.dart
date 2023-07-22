@@ -67,8 +67,9 @@ class AdminProductViewPage extends StatelessWidget {
         height10,
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             children: [
               Text(
                 productData.productName,

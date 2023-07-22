@@ -20,9 +20,9 @@ void main() async {
   ErrorWidget.builder = (FlutterErrorDetails details) {
     return Container(
       alignment: Alignment.center,
-      child: Text(
-        'Error\n${details.summary}',
-        style: const TextStyle(
+      child: const Text(
+        'Error\nSomthing went wrong',
+        style: TextStyle(
           color: Colors.orangeAccent,
           fontWeight: FontWeight.bold,
           fontSize: 20,

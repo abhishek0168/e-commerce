@@ -55,7 +55,7 @@ class UserAuthFirebase {
 
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
-    // await FirebaseFirestore.instance.clearPersistence();
+    await GoogleSignIn().signOut();
   }
 
   Future<void> addUserToDatabase(UserModel model) async {
