@@ -94,28 +94,8 @@ class ProductCheckOutPage extends StatelessWidget {
                   child: RadioListTile(
                     value: PaymentMethod.card,
                     groupValue: value.selectedMethod,
-                    onChanged: (option) {
-                      value.changePaymentMethod(option!);
-                    },
+                    onChanged: null,
                     title: const Text('Credit / Debit card'),
-                  ),
-                ),
-              ),
-              height10,
-              Consumer<PaymentViewModel>(
-                builder: (context, value, child) => Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  alignment: Alignment.center,
-                  child: RadioListTile(
-                    value: PaymentMethod.upi,
-                    groupValue: value.selectedMethod,
-                    onChanged: (option) {
-                      value.changePaymentMethod(option!);
-                    },
-                    title: const Text('UPI'),
                   ),
                 ),
               ),

@@ -48,17 +48,13 @@ class DataFromFirebase extends ChangeNotifier {
 
   Future<void> sortOnPress(SortProductBy value, BuildContext context) async {
     loadingIdicator(context);
-    await Future.delayed(
-      const Duration(
-        seconds: 2,
-      ),
-    );
     sortValue = value;
     await sortProducts();
+    notifyListeners();
+    await Future.delayed(const Duration(seconds: 2));
     if (context.mounted) {
       Navigator.pop(context);
     }
-    notifyListeners();
   }
 
   Future<List<ProductModel>> sortProducts() async {

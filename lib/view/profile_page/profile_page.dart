@@ -89,8 +89,28 @@ class ProfilePage extends StatelessWidget {
           // ),
           TextButton.icon(
             onPressed: () {
-              signInpageViewModel.signOutUser();
-              mainPageviewModel.changeIndex(0);
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  surfaceTintColor: AppColors.whiteColor,
+                  title: const Text('Logout'),
+                  content: const Text('Are you sure you want to logout ?'),
+                  actions: [
+                    OutlinedButton(
+                        onPressed: () {
+                          signInpageViewModel.signOutUser();
+                          mainPageviewModel.changeIndex(0);
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Yes')),
+                    FilledButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('No'))
+                  ],
+                ),
+              );
             },
             icon: const Icon(Icons.logout),
             label: const Text('Logout'),

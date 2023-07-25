@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/model/user_model/user_model.dart';
+import 'package:ecommerce_app/services/firebase_user_services.dart';
 // import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -72,28 +73,38 @@ class UserAuthFirebase {
   }
 
   Future<void> signInWithGoogle() async {
-    final googleUser = await GoogleSignIn().signIn();
-    if (googleUser == null) return;
-    log('signInWithGoogle() ${googleUser.email}');
-    log('signInWithGoogle() ${googleUser.id}');
-    log('signInWithGoogle() ${googleUser.displayName}');
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+    try {
+      final googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) return;
+      log('signInWithGoogle() ${googleUser.email}');
+      log('signInWithGoogle() ${googleUser.id}');
+      log('signInWithGoogle() ${googleUser.displayName}');
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-    final userModel = UserModel(
-      id: '',
-      userName: googleUser.displayName!,
-      userEmail: googleUser.email,
-      userPassword: '',
-    );
-
-    await addUserToDatabase(userModel);
-    await FirebaseAuth.instance.signInWithCredential(credential);
+      final userModel = UserModel(
+        id: '',
+        userName: googleUser.displayName!,
+        userEmail: googleUser.email,
+        userPassword: '',
+      );
+      var usersList = await FirebaseUserDetails().getAllUsers();
+      var isPresent =
+          usersList.any((element) => element.userEmail == googleUser.email);
+      if (!isPresent) {
+        await addUserToDatabase(userModel);
+      } else {
+        signIn(email: userModel.userEmail, password: userModel.userPassword);
+      }
+      await FirebaseAuth.instance.signInWithCredential(credential);  
+    } catch (e) {
+      log('google sign in error\n$e');
+    }
   }
 
   Future<bool> emailVerification() async {

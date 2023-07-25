@@ -8,8 +8,12 @@ import 'package:ecommerce_app/services/firebase_services.dart';
 import 'package:ecommerce_app/services/firebase_user_services.dart';
 import 'package:ecommerce_app/services/user_auth.dart';
 import 'package:ecommerce_app/utils/constants.dart';
+import 'package:ecommerce_app/view/admin_panel/product_page/admin_product_diplaying_page.dart';
+import 'package:ecommerce_app/view/selection_page/selection_page.dart';
+import 'package:ecommerce_app/view/theme/app_color_theme.dart';
+import 'package:ecommerce_app/view/widgets/custome_snackbar.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
@@ -34,6 +38,9 @@ class UserDetailsViewModel extends ChangeNotifier {
   bool cartIsScrolling = true;
   bool isPromoCodeUsed = false;
   String? usedPromoCode;
+  bool isAdminSignIn = false;
+  final adminPasswordController = TextEditingController();
+  final adminEmailController = TextEditingController();
 
   // instances
   final firebaseUserService = FirebaseUserDetails();
@@ -43,8 +50,57 @@ class UserDetailsViewModel extends ChangeNotifier {
 
   Future<void> init() async {
     totalProductData = await productServices.getProductDetails();
-    FirebaseAuth.instance.currentUser!.reload();
+    await getAdminSignIn();
+    // FirebaseAuth.instance.currentUser!.reload();
     await fetchingUserData();
+  }
+
+  Future<void> getAdminSignIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    isAdminSignIn = prefs.getBool('adminSign') ?? false;
+  }
+
+  Future<void> onAdminSignIn(
+      String password, String email, BuildContext context) async {
+    const adminEmail = 'admin0168@mail.com';
+    const adminPassword = 'admin!@#123';
+
+    if (password == adminPassword && email == adminEmail) {
+      isAdminSignIn = true;
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setBool('adminSign', true);
+      adminEmailController.clear();
+      adminPasswordController.clear();
+      if (context.mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const AdminDisplayPage(),
+          ),
+        );
+      }
+      notifyListeners();
+    } else {
+      final snackBar = CustomeSnackBar().snackBar1(
+        bgColor: AppColors.primaryColor,
+        content: 'Invaild email or password',
+        textColor: AppColors.whiteColor,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  Future<void> onAdminSignOut(BuildContext context) async {
+    isAdminSignIn = false;
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('adminSign', false);
+    if (context.mounted) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const SelectPage(),
+          ),
+          (route) => false);
+    }
+    notifyListeners();
   }
 
   void changeLoading() {
@@ -70,8 +126,6 @@ class UserDetailsViewModel extends ChangeNotifier {
     usersList = await firebaseUserService.getAllUsers();
     return usersList;
   }
-
-  // fd
 
   Future<void> fetchingUserData() async {
     userData = await FirebaseUserDetails().getUserDetails();

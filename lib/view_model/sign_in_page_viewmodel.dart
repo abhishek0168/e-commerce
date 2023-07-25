@@ -6,6 +6,7 @@ import 'package:ecommerce_app/utils/constants.dart';
 import 'package:ecommerce_app/view_model/user_address_viewmodel.dart';
 import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class SignInPageViewModel extends ChangeNotifier {
   // signin page
@@ -99,6 +100,7 @@ class SignInPageViewModel extends ChangeNotifier {
 
   Future<void> signOutUser() async {
     await firebseUserAuth.signOut();
+    await GoogleSignIn().signOut();
   }
 
   Future<void> createUser() async {

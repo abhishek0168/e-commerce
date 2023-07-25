@@ -6,6 +6,7 @@ import 'package:ecommerce_app/view/theme/app_color_theme.dart';
 import 'package:ecommerce_app/view/widgets/three_dot_loading.dart';
 import 'package:ecommerce_app/view_model/admin_page_viewmodel.dart';
 import 'package:ecommerce_app/view_model/product_data_from_firebase.dart';
+import 'package:ecommerce_app/view_model/user_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,7 @@ class AdminDisplayPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final firebaseDataController = Provider.of<DataFromFirebase>(context);
     final adminPageController = Provider.of<AdminPageViewModel>(context);
+    final userDetailsModel = context.read<UserDetailsViewModel>();
     return Scaffold(
       drawer: Drawer(
         child: ListView(
@@ -54,6 +56,33 @@ class AdminDisplayPage extends StatelessWidget {
                   ),
                 );
               },
+            ),
+            TextButton.icon(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Log out'),
+                    content: const Text('Are you sure you want to log out'),
+                    actions: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          userDetailsModel.onAdminSignOut(context);
+                        },
+                        child: const Text('Yes'),
+                      ),
+                      OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('No'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              icon: const Icon(Icons.logout),
+              label: const Text('Log out'),
             ),
           ],
         ),

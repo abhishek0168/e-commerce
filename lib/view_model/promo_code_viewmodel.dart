@@ -27,6 +27,11 @@ class PromoCodeViewModel extends ChangeNotifier {
     promoCodes = await productServices.getPromoCodes();
   }
 
+  Future<List<PromoCodeModel>> getPromoCodes() async {
+    promoCodes = await productServices.getPromoCodes();
+    return promoCodes;
+  }
+
   void pickupExpiryDate(
     BuildContext context,
   ) {

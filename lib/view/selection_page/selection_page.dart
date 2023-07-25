@@ -1,5 +1,4 @@
-import 'package:ecommerce_app/utils/constants.dart';
-
+import 'package:ecommerce_app/view/admin_panel/admin_signin/admin_signin.dart';
 import 'package:ecommerce_app/view/admin_panel/product_page/admin_product_diplaying_page.dart';
 import 'package:ecommerce_app/view/mail_verification_page/mail_verification_page.dart';
 import 'package:ecommerce_app/view/sign_in_and_sign_up/Auth_page.dart';
@@ -32,13 +31,24 @@ class SelectPage extends StatelessWidget {
                   splashColor: AppColors.primaryColor,
                   onTap: () async {
                     await dataFromFirebase.callPrductDetails();
-                    if (context.mounted) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AdminDisplayPage(),
-                        ),
-                      );
+                    if (userViewModel.isAdminSignIn) {
+                      if (context.mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AdminDisplayPage(),
+                          ),
+                        );
+                      }
+                    } else {
+                      if (context.mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AdminSignIn(),
+                          ),
+                        );
+                      }
                     }
                   },
                   child: Container(

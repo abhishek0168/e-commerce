@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDe0DkvUQ8vX724qhJhr4Ko84E2H0hk_uQ',
-    appId: '1:650935630603:android:4fd77f3c7d2be2b39b800e',
+    appId: '1:650935630603:android:b84d2bf79cea457e9b800e',
     messagingSenderId: '650935630603',
     projectId: 'flutter-project-e-commerce',
     storageBucket: 'flutter-project-e-commerce.appspot.com',
@@ -62,11 +62,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyA1tY5lj0chmyN20SOCpM03w-wqK6z3SMM',
-    appId: '1:650935630603:ios:6418bd451276d3979b800e',
+    appId: '1:650935630603:ios:85a16acec842c2039b800e',
     messagingSenderId: '650935630603',
     projectId: 'flutter-project-e-commerce',
     storageBucket: 'flutter-project-e-commerce.appspot.com',
-    iosBundleId: 'com.example.ecommerceApp',
+    androidClientId: '650935630603-2e8hcapt2hdi7tgsqvdiip4ofo65qkd0.apps.googleusercontent.com',
+    iosClientId: '650935630603-hthm2p69gqbso6ob95rig9tu8r0en374.apps.googleusercontent.com',
+    iosBundleId: 'com.abhishekthankachan.glimp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -75,6 +77,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '650935630603',
     projectId: 'flutter-project-e-commerce',
     storageBucket: 'flutter-project-e-commerce.appspot.com',
+    androidClientId: '650935630603-2e8hcapt2hdi7tgsqvdiip4ofo65qkd0.apps.googleusercontent.com',
+    iosClientId: '650935630603-usqs3e673oh8q111nvs5eg00ia2mtrrh.apps.googleusercontent.com',
     iosBundleId: 'com.example.ecommerceApp.RunnerTests',
   );
 }
